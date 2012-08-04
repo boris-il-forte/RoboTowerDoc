@@ -1,0 +1,96 @@
+\chapter{Installazione del software}
+%\markboth{Introduzione}{Introduzione}
+\label{cap:installazione}
+
+Le istruzioni per la compilazione e l'utilizzo del software si riferiscono a un sistema Linux, e sono state testate con le distribuzioni Debian e Ubuntu 12.04.
+
+\section{Compilare il sorgente}
+
+Qui va l'elenco delle dipendenze e le istruzioni per compilare ed eseguire il tutto più
+le istruzioni per eseguire il gioco
+
+serve ROS, poi ???
+
+\section{Avvio del gioco}
+
+%TODO qui vanno le istruzioni su come utilizzare il sw
+Per avviare ROS e i nodi che controllano il robot, è sufficiente il comando
+\begin{verbatim}
+roslaunch spykee.launch
+\end{verbatim}
+dalla cartella del progetto. Per avviare il gioco, avviare il programma \verb|isaac| presente nella directory \verb|IsAac/bin|. Per fermare il robot, è sufficiente chiudere quest'ultimo programma.
+
+\section{Firmware del microcontrollore}
+
+Il firmware è stato realizzato per la scheda (Evaluation Board) STM32F4 Discovery della ST. Nelle istruzioni che seguono, verrà utilizzato il programmatore integrato sulla scheda (ST-Link v2).
+
+\subsection*{Prerequisiti}
+\begin{enumerate}
+\item Installare una toolchain GNU per ARM, ad esempio CodeSourceryLite, ed aggiungerla nel PATH dell’utente. Nel seguito si suppone che i binari del crosscompilatore gcc per ARM e del debugger siano disponibili nel PATH e raggiungibili rispettivamente dai comandi \verb|arm-none-eabi-gcc| e \verb|arm-none-eabi-gdb|. Se i comandi sono diversi (o non sono presenti nel PATH), è necessario cambiare di conseguenza il \verb|Makefile| del progetto.
+
+\item Installare OpenOCD, scaricabile da \url{http://openocd.sourceforge.net}. Potrebbe essere necessario installare alcune dipendenze, elencate comunque nella documentazione del programma.
+
+\textbf{Nota } Al momento della scrittura del presente manuale (luglio 2012), il programmatore ST-Link v2 è ufficialmente supportato solo sulla piattaforma Windows. Tuttavia, è presente un supporto sperimentale in OpenOCD: per poterlo utilizzare, è necessario scaricare e compilare la release di sviluppo dal repository git di sviluppo (\url{http://sourceforge.net/scm/?type=git&group_id=274635}). Una volta scaricati i sorgenti, è sufficiente compilarli tramite i seguenti comandi  (dalla cartella in cui si è clonato il repository):
+\begin{verbatim}
+   $ ./configure --enable-maintainer-mode --enable-stlink
+   $ make
+   # make install
+\end{verbatim}
+L’ultimo comando serve per installare OpenOCD nelle cartelle di sistema, e dev'essere eseguito con i privilegi di root.
+
+\item Scaricare i sorgenti di ChibiOS da \url{http://chibios.org}. Una volta scaricato e decompresso l'archivio, aprire il \verb|Makefile| presente nella cartella FirmwareSpykee e modificare la riga
+\begin{verbatim}
+   CHIBIOS=/home/stm32/Workspace/libs/ChibiOS
+\end{verbatim}
+inserendo il percorso corretto. Il firmware è stato testato con la versione 2.4.1 di ChibiOS.
+\end{enumerate}
+
+\subsection*{Compilazione ed installazione}
+
+\paragraph{Compilazione} Posizionarsi nella cartella FirmwareSpykee e dare il comando
+\begin{verbatim}
+   $ make
+\end{verbatim}
+Se la compilazione ha successo, viene prodotto il file \verb|ch.elf| nella sottocartella \verb|build|.
+
+\paragraph{Installazione} Per caricare il firmware sulla scheda, è necessario prima di tutto collegare la scheda al computer e avviare OpenOCD con il comando
+\begin{verbatim}
+   $ openocd -f board/stm32f4discovery.cfg
+\end{verbatim}
+Quindi, mantenendo aperto OpenOCD, collegare il debugger gdb:
+\begin{verbatim}
+   $ arm-none-eabi-gdb ch.elf
+   (gdb) target extended-remote localhost:3333
+\end{verbatim}
+dove \verb|ch.elf| è il percorso del firmware compilato che si vuole caricare sulla scheda. Una volta che \verb|gdb| è connesso ad OpenOCD, la seguente sequenza di comandi cancella il contenuto della memoria FLASH, carica il nuovo firmware, e quindi lo avvia:
+\begin{verbatim}
+   (gdb) monitor reset halt
+   (gdb) monitor flash probe 0 
+   (gdb) monitor stm32f2x mass_erase 0 
+   (gdb) load 
+   (gdb) monitor reset halt 
+   (gdb) continue
+\end{verbatim}
+
+\textbf{Nota } A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l’utility ST Visual Programmer (disponibile solo per Windows).
+%TODO non so se è il caso di mettere qui la corrispondenza pin <-> connessione o basta metterla nel README nella cartella FirmwareSpykee
+
+\section{Collegamenti hardware}
+Il file board.h permette di configurare le funzioni assegnate ai vari della Discovery Board presente nel robot. Attualmente, i pin presenti sulla scheda sono assegnati in questo modo:
+\begin{itemize}
+\item Collegamento con i sonar (timer): \verb|PA8| (nord), \verb|PB4| (sud), \verb|PA0| (ovest), \verb|PC6| (est)
+\item Seriale per collegamento con lo XBee, bitrate 19200 bps: \verb|PA2| (TX) e \verb|PA3| (RX)
+\item Ricevitore dei segnali inviati
+	\begin{itemize}
+	\item Dalle fabbriche: \verb|PD0|, \verb|PD1| e \verb|PD2|
+	\item Dalla torre: \verb|PD3|
+	\end{itemize}
+\item Led presenti sul robot:
+	\begin{itemize}
+	\item Led rossi: \verb|PE7| (0), \verb|PE8| (1), \verb|PE9| (2), \verb|PE10| (3)
+	\item Led gialli: \verb|PE11| (0), \verb|PE12| (1), \verb|PE13| (3), \verb|PE14| (4)
+	\item Led verde: \verb|PE15|
+	\item Led a infrarossi (sulle spalle del robot): \verb|PD11|
+	\end{itemize}
+\item Lettore RFID (collegamento seriale a 9600 bps): \verb|PB11| (RX)
+\end{itemize}

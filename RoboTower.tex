@@ -1,0 +1,66 @@
+\documentclass[11pt,a4paper,twoside]{report}
+
+%--------------------------------------------------
+% global definitions to be used in the front page
+%--------------------------------------------------
+\providecommand{\coursename}{Progetto di Ingegneria Informatica}
+\providecommand{\documentsubtitle}{Documentazione del progetto}
+\providecommand{\annoacc}{2011-2012}
+\providecommand{\principaladviser}{Prof. Andrea Bonarini}
+\providecommand{\firstauthor}{Marcello Pogliani}
+\providecommand{\firstauthorid}{742961}
+\providecommand{\secondauthor}{Davide Tateo}
+\providecommand{\secondauthorid}{743013}
+\title{RoboTower}
+\author{\firstauthor, \secondauthor}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage[pdfauthor={\firstauthor, \secondauthor}, pdftitle={RoboTower}, colorlinks,linkcolor=black]{hyperref}
+
+\usepackage{settings/frontesp}
+
+\include{settings/theme}
+
+\begin{document}
+
+
+\titlep
+
+% \pagenumbering{roman}
+\tableofcontents
+\cleardoublepage
+
+% \pagenumbering{arabic}
+% \setcounter{1}
+\pagestyle{fancy}
+
+
+% --------------------------------------------------------------------------------------------------------------------
+% Capitoli
+\include{contents/introduction}
+\include{contents/storyboard}
+\include{contents/scenarios}
+\include{contents/hwarchitecture}
+% \include{contents/swarchitecture}
+\include{contents/conclusions}
+
+% Appendici for now don't needed!
+\appendix
+\include{contents/installmanual}
+% \include con i nomi dei capitoli
+
+% --------------------------------------------------------------------------------------------------------------------
+% Bibliografia - nothing for now!
+\bibliographystyle{plain}
+\input{contents/bibliography.tex}
+
+% --------------------------------------------------------------------------------------------------------------------
+
+\end{document}
