@@ -94,3 +94,7 @@ Il file board.h permette di configurare le funzioni assegnate ai vari della Disc
 	\end{itemize}
 \item Lettore RFID (collegamento seriale a 9600 bps): \verb|PB11| (RX)
 \end{itemize}
+
+\paragraph{Alimentazione} Tutti i dispositivi (discovery board, xbee, lettore rfid, sonar, ricevitore atmel, driver per i led a infrarossi) vanno alimentati a +5V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
+
+\paragraph{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l’unità di elaborazione e il robot, pertanto per debuggare problemi di configurazione è sufficiente utilizzare un terminale seriale, come screen o minicom su Linux. Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi. Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di 19200 bps, e impostare come Destination Address (High e Low) il Serial Number dell’altro Xbee.
