@@ -1,0 +1,81 @@
+\chapter{Architettura software}
+\label{cap:architetturasw}
+
+Per semplificare l'implementazione del sistema e agevolare il riuso del codice esistente, è stato utilizzato ROS (Robot Operating System) \cite{rosweb}. Si tratta di un middleware appositamente sviluppato per applicazioni robotiche costituite da un elevato numero di moduli relativamente indipendenti e interagenti tra loro.
+
+Un sistema realizzato con ROS è suddiviso in un certo numero di \emph{nodi}, ovvero semplici processi indipendenti ed eseguiti in parallelo, che svolgono ciascuno una funzione elementare. I nodi possono poi essere raggruppati in \emph{packages}. A loro volta, un gruppo di packages può formare uno \emph{stack}.
+
+I nodi possono comunicare tra loro, utilizzando i meccanismi di comunicazione interprocesso messi a disposizione da ROS in due modi:
+\begin{itemize}
+ \item secondo un paradigma ``publish-subscribe'', scambiandosi \emph{messaggi} su un certo \emph{argomento} (\emph{topic})
+ \item invocando \emph{servizi} offerti da altri nodi, secondo una semantica simile a quella di una chiamata a funzione
+\end{itemize}
+
+Il sistema realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware.
+
+\begin{figure}[h]
+\input{images/schemanodi.tex}
+\caption{Struttura generale del sistema} 
+\label{fig:schemanodi}
+\end{figure}
+
+Nei paragrafi successivi verranno presentate le funzioni svolte dai singoli nodi.
+
+%TODO È IL CASO DI METTERE QUI LE DESCRIZIONI COMPLETE DEI MESSAGGI???
+
+\section{SpyKee}
+Il nodo \emph{SpyKee} controlla le comunicazioni che avvengono tra unità di elaborazione e robot via Wi-Fi (ossia i comandi forniti ai cingoli e le immagini catturate dalla telecamera). È l'adattamento a ROS della libreria realizzata nei precedenti progetti.
+
+SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini, compresse in formato JPEG, ricevute dalla telecamera. Inoltre il nodo sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli\footnote{espressi in termini di due interi compresi tra $-90$ e $90$ che rappresentano la velocità tangenziale e angolare del robot, e che vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro}.
+
+\section{Echoes}
+\emph{Echoes} comunica via Zigbee con l'hardware aggiunto a posteriori al robot: sonar, led, lettore RFID, ricevitori dei comandi inviati dagli interruttori posti sulle torri e sulle fabbriche.
+
+Questo nodo pubblica messaggi contenenti i dati rilevati:
+\begin{itemize}
+	\item \verb|Echoes::Sonar|, sull'argomento \verb|sonar_data|, contenenti i dati ricevuti dai sonar (valori delle distanze dei quattro sonar montati sul robot, espresse in millimetri). 
+	\item \verb|Echoes::Rfid|, sull'argomento \verb|rfid_data|, contenenti semplicemente una stringa identificativa del tag RFID rilevato
+	\item \verb|Echoes::Towers|, sull'argomento \verb|towers_data|, contenente lo stato della torre (abbattuta/non abbattuta) e il numero di fabbriche che sono state abbattute dall'inizio del gioco. %TODO il reset!!!
+\end{itemize}
+Inoltre espone un servizio di tipo \verb|Echoes::Led| che permette di controllare l'accensione dei led (in particolare, il \emph{numero} di led rossi che si vogliono accendere, e l'accensione di ogni singolo led per quanto riguarda i led gialli e il led verde montato sulla testa di Spykee). %TODO AGGIUNGERE RFID, APRICANCELLI E SISTEMARE LED!!!
+
+A causa dell'alto rumore presente nei valori provenienti dai sonar, il valore che viene pubblicato sul topic \verb|sonar_data| è filtrato attraverso un filtro a media mobile esponenziale. Questo significa che il dato pubblicato all'arrivo del $k$-esimo campione $x_{cur}$ registrato dal sonar è dato da %TODO sicuri che alpha = 0.3?!?
+  \[ x_k = \alpha x_{cur} + (1 - \alpha) x_{k-1} \]
+dove $\alpha = 0.3$, valore sufficientemente alto da rendere l'aggiornamento dei sonar abbastanza veloce per poter evitare efficacemente l'ostacolo, e sufficientemente basso da ridurre il rumore ad alta frequenza presente nel segnale.
+
+\section{Vision: identificazione degli oggetti}
+
+Il nodo Vision si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, al fine di rilevare la presenza di una torre o di una fabbrica all'interno dell'immagine, mediante riconoscimento dei colori. Riceve da \emph{SpyKee} le immagini della telecamera ed effettua l'identificazione degli oggetti di interesse per il gioco contenuti nell'immagine (la torre e le fabbriche). Analizzata l'immagine, il nodo pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results| contenente i dati riguardanti gli oggetti trovati e la loro posizione rispetto al centro dell'immagine. %TODO DETTAGLIARE MESSAGGI
+
+Il cuore del nodo è un algoritmo, sviluppato all'interno del framework MRT \cite{mrt} e già utilizzato in \cite{docmandelli} (a cui si rimanda per ulteriori dettagli), che si occupa di identificare all'interno dell'immagine fornita, dei blob di colore ``simile'' a quello degli oggetti che si stanno cercando. Poiché l'analisi che viene effettuata per identificare le regioni di interesse si basa su un algoritmo di tipo KNN, è necessaria una prima fase di addestramento, che permette di ottenere un classificatore (un file \verb|.kcc|), mediante il quale è possibile associare ad ogni pixel dell'immagine, ossia ad ogni valore $(r,g,b)$, una classe (``torre'', ``fabbrica'' o ``niente'').
+
+Il classificatore viene generato a partire da un file che contiene semplicemente un elenco di valori \verb|BGR| di pixel che si considerano del colore cercato. Per generare questo file è possibile utilizzare il programma \emph{LittleEndian}, evidenziando nell'immagine ricevuta dal robot le aree che corrispondono agli oggetti cercati. È necessario prestare particolare attenzione nel training del classificatore, in quanto è una fase critica per il corretto funzionamento del gioco e il corretto riconoscimento degli oggetti. %% TODO TODO STA ROBA E' DA SISTEMARE!!!
+
+\section{IsAac: il comportamento del robot}
+IsAac si occupa di controllare il comportamento di basso livello del robot durante il gioco. Questo nodo ignora le problematiche relative al conteggio dei punti, all'avvio e alla conclusione della partita, e gestisce semplicemente il comportamento del robot (i set-point per i cingoli e l'accensione dei led presenti sul robot) in base alle regole del gioco e ai dati provenienti dai sensori. 
+
+ \emph{IsAac} riceve i messaggi pubblicati da Echoes e Vision, e invia comandi a SpyKee (messaggi \verb|Spykee::Motion| sull'argomento \verb|spykee_motion|) riguardanti il controllo dei cingoli. Inoltre invoca il servizio \verb|led_data| esposto da Echoes per il controllo dei led posti sul robot.
+
+%TODO TODO DA AGGIUNGERE SPIEGAZIONI sintetiche SU BRIAN,FUZZY etc
+
+TODO ...
+
+%TODO espandere?
+I comportamenti che sono stati implementati riguardano:
+\begin{itemize}
+ \item Cercare la torre o le fabbriche (casualmente)
+ \item Raggiungere la torre o la fabbrica (una volta che è stata trovata)
+ \item Evitare gli ostacoli
+ \item Distruggere la torre (o una fabbrica)
+\end{itemize}
+
+%TODO dettagliare meglio le regole o il loro funzionamento, spiegare la suddivisione in livelli???
+
+In aggiunta a quanto gestito mediante le regole fuzzy, il nodo si occupa di gestire i comportamenti ``speciali'' del robot, che vengono attivati quando il robot si avvicina ai tag RFID. L'associazione tra i comportamenti e gli identificatori dei corrispondenti tag RFID è definita in un apposito file di configurazione (\verb|rfidconfig.txt|). I comportamenti disponibili, che consistono nella variazione di alcuni dati provenienti dai sensori o diretti agli attuatori per per una durata predefinita, sono:
+\begin{itemize}
+ \item blocco totale del robot (\verb|lock_all|)
+ \item blocco di uno dei due cingoli (\verb|force_rotate_left| e \verb|force_rotate_right|)
+ \item blocco della visione (\verb|disable_vision|)
+\end{itemize}
+
+%TODO interfaccia grafica? altro?

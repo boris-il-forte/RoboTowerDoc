@@ -22,7 +22,20 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{booktabs}
-\usepackage[pdfauthor={\firstauthor, \secondauthor}, pdftitle={RoboTower}, colorlinks,linkcolor=black]{hyperref}
+\usepackage[pdfauthor={\firstauthor, \secondauthor}, pdftitle={RoboTower}, colorlinks, linkcolor=black, urlcolor=black]{hyperref}
+
+\usepackage{amsthm}
+\newtheoremstyle{note} % name
+	{\topsep} 	% Space above
+	{\topsep} 	% Space below
+	{\small\sffamily}		% Body font
+	{}		% Indent amount
+	{\bfseries}% Theorem head font
+	{:}		% Punctuation after theorem head
+	{.5em}	% Space after theorem head
+	{}		% Theorem head spec (can be left empty, meaning ‘normal’)
+\theoremstyle{note}
+\newtheorem*{nota}{Nota}	
 
 \usepackage{settings/frontesp}
 
@@ -48,7 +61,7 @@
 \include{contents/storyboard}
 \include{contents/scenarios}
 \include{contents/hwarchitecture}
-% \include{contents/swarchitecture}
+\include{contents/swarchitecture}
 \include{contents/conclusions}
 
 % Appendici for now don't needed!

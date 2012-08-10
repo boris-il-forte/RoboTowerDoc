@@ -2,23 +2,74 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:installazione}
 
-Le istruzioni per la compilazione e l'utilizzo del software si riferiscono a un sistema Linux, e sono state testate con le distribuzioni Debian e Ubuntu 12.04.
+Il software realizzato è stato sviluppato per un sistema Linux. Le istruzioni seguenti si riferiscono principalmente alla distribuzione Ubuntu (in particolare, sono state testate con la versione 12.04) in quanto è l'unica supportata da ROS. Il software è stato testato anche con Debian: l'unica differenza risiede nell'installazione di ROS, che va fatta manualmente.
 
-\section{Compilare il sorgente}
+\section{Installazione del software lato PC}
+\paragraph{Installazione di ROS} Le istruzioni di installazione di ROS sono presenti nel sito ufficiale, \url{www.ros.org}, e variano a seconda della distribuzione. In particolare, per Ubuntu, è necessario aggiungere i repository di ROS alle sorgenti software di sistema, dopodiché è possibile installare ROS direttamente dal package manager di Ubuntu. 
 
-Qui va l'elenco delle dipendenze e le istruzioni per compilare ed eseguire il tutto più
-le istruzioni per eseguire il gioco
-
-serve ROS, poi ???
-
-\section{Avvio del gioco}
-
-%TODO qui vanno le istruzioni su come utilizzare il sw
-Per avviare ROS e i nodi che controllano il robot, è sufficiente il comando
+\begin{nota} I comandi per installare ROS su Ubuntu, riferiti all'ultima versione di ROS (\verb|fuerte|) e del sistema operativo (\verb|precise|) disponibile al momento della scrittura della documentazione, sono:
 \begin{verbatim}
-roslaunch spykee.launch
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" 
+          > /etc/apt/sources.list.d/ros-latest.list'
+$ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+$ sudo apt-get update && sudo apt-get install ros-fuerte-desktop
 \end{verbatim}
-dalla cartella del progetto. Per avviare il gioco, avviare il programma \verb|isaac| presente nella directory \verb|IsAac/bin|. Per fermare il robot, è sufficiente chiudere quest'ultimo programma.
+Una volta installati i pacchetti, è necessario fare in modo che le variabili di ambiente di ROS vengano impostate all'avvio:
+\begin{verbatim}
+$ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
+$ . ~/.bashrc
+\end{verbatim}
+Da ultimo, è necessario installare alcuni componenti aggiuntivi di ROS che verranno utilizzati in seguito:
+\begin{verbatim}
+$ sudo easy_install -U rosinstall vcstools rosdep
+\end{verbatim}
+\end{nota}
+
+\paragraph{Installazione delle dipendenze} Per poter compilare correttamente il software realizzato, è necessario che siano installati sul sistema, oltre a ROS e alle sue dipendenze, i seguenti pacchetti e librerie, installabili dai repository della distribuzione Linux in uso:
+\begin{itemize}
+\item flex e bison, utilizzate da Mr. Brian per generare i parser
+\item OpenCV (libopencv-dev), utilizzate per l'analisi delle immagini
+\item le librerie Qt4\footnote{Probabilmente le librerie Qt sono già installate da ROS come dipendenza} (libqt4-dev), utilizzate per l'interfaccia grafica
+\end{itemize}
+Inoltre, sono necessari i pacchetti di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}, contenuto nello stack \texttt{ias\_perception}} e \verb|opencv2|. Per scaricare questi pacchetti nella home (nella cartella \verb|~/ros|), è necessario innanzitutto inizializzare tale cartella come workspace:
+\begin{verbatim}
+$ rosinstall ~/ros /opt/ros/fuerte
+$ echo "source ~/ros/setup.bash" >> ~/.bashrc
+$ . ~/.bashrc
+\end{verbatim}
+Poi, installare e compilare i pacchetti come segue:
+\begin{verbatim}
+$ roslocate info ann > ann.rosinstall
+$ rosinstall ~/ros ann.rosinstall
+$ roscd ann
+$ make
+$ roslocate info opencv2 > opencv2.rosinstall
+$ rosinstall ~/ros opencv2.rosinstall
+\end{verbatim}
+\paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git (git clone git://github.com/pogliamarci/robotower.git) oppure dall'airwiki in una cartella qualunque. Nel seguito, si suppone che i sorgenti siano disponibili nella cartella \verb|robotower| nella home.
+
+Una volta scaricati i file, è necessario nel \verb|ROS_PACKAGE_PATH| la cartella del progetto, aggiungendo al file :
+\begin{verbatim}
+$ echo "export ROS_PACKAGE_PATH=/home/username
+            /robotower:$ROS_PACKAGE_PATH" >> ~/.bashrc
+$ source ~/.bashrc
+\end{verbatim}
+dove \verb|username| va sostituito con il nome dell'utente che ha eseguito l'accesso al sistema.
+A questo punto, dovrebbe essere possibile compilare i sorgenti eseguendo semplicemente
+\begin{verbatim}
+$ make
+\end{verbatim}
+dalla cartella principale del progetto.
+
+\begin{nota}
+In alternativa, è possibile utilizzare il comando \verb|rosmake <nome_package>| per ognuno dei package realizzati. Quest'ultimo comando dovrebbe tentare di compilare e/o risolvere automaticamente le dipendenze, ma in generale risulta più lento e fornisce meno indicazioni sullo standard output rispetto all'utilizzo di \verb|make|.
+\end{nota}
+
+\section{Avvio del gioco} Per avviare ROS e i nodi che controllano il robot, è sufficiente il comando
+\begin{verbatim}
+$ roslaunch spykee.launch
+\end{verbatim}
+dalla cartella del progetto. Per avviare il gioco, avviare il programma \verb|isaac| presente nella directory \verb|IsAac/bin| e il programma \verb|roboTower| presente in \verb|RoboTower_Game/bin|. Per fermare il robot, è sufficiente chiudere quest'ultimo programma.
 
 \section{Firmware del microcontrollore}
 
@@ -26,21 +77,27 @@ Il firmware è stato realizzato per la scheda (Evaluation Board) STM32F4 Discove
 
 \subsection*{Prerequisiti}
 \begin{enumerate}
-\item Installare una toolchain GNU per ARM, ad esempio CodeSourceryLite, ed aggiungerla nel PATH dell’utente. Nel seguito si suppone che i binari del crosscompilatore gcc per ARM e del debugger siano disponibili nel PATH e raggiungibili rispettivamente dai comandi \verb|arm-none-eabi-gcc| e \verb|arm-none-eabi-gdb|. Se i comandi sono diversi (o non sono presenti nel PATH), è necessario cambiare di conseguenza il \verb|Makefile| del progetto.
+\item Installare una toolchain GNU per ARM. Per la realizzazione del firmware, è stata utilizzata  CodeSourceryLite\footnote{scaricabile da \url{http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/}}, che fornisce una versione precompilata della toolchain GNU (gcc, gdb, ...). È sufficiente scaricare l'archivio, decomprimerlo in una cartella, e aggiungere la sottocartella \verb|bin| dell'archivio nel \verb|PATH| dell’utente. Una volta che la toolchain è installata, il compilatore dovrebbe essere raggiungibile dal comando \verb|arm-none-eabi-gcc|. Se si usa una toolchain diversa, potrebbe essere necessario cambiare i nomi degli eseguibili nel \verb|Makefile|.
 
-\item Installare OpenOCD, scaricabile da \url{http://openocd.sourceforge.net}. Potrebbe essere necessario installare alcune dipendenze, elencate comunque nella documentazione del programma.
+\begin{nota}
+Attualmente CodeSourceryLite viene rilasciato compilato per processori x86 a 32bit. Nel caso il sistema in uso abbia un sistema operativo a 64 bit, è necessario installare le librerie \verb|ia32-libs|.
+\end{nota}
 
-\textbf{Nota } Al momento della scrittura del presente manuale (luglio 2012), il programmatore ST-Link v2 è ufficialmente supportato solo sulla piattaforma Windows. Tuttavia, è presente un supporto sperimentale in OpenOCD: per poterlo utilizzare, è necessario scaricare e compilare la release di sviluppo dal repository git di sviluppo (\url{http://sourceforge.net/scm/?type=git&group_id=274635}). Una volta scaricati i sorgenti, è sufficiente compilarli tramite i seguenti comandi  (dalla cartella in cui si è clonato il repository):
+\item Installare OpenOCD, scaricabile da \url{http://openocd.sourceforge.net}. Potrebbe essere necessario installare alcune dipendenze (autotools, automake, libusb ed altre), elencate comunque nella documentazione del programma.
+
+\begin{nota}
+Al momento della scrittura del presente manuale (luglio 2012), il programmatore ST-Link v2 è ufficialmente supportato solo sulla piattaforma Windows. Tuttavia, è presente un supporto sperimentale in OpenOCD: per poterlo utilizzare, è necessario scaricare e compilare la release di sviluppo dal repository git di sviluppo\footnote{\url{http://sourceforge.net/scm/?type=git&group_id=274635}}. Una volta scaricati i sorgenti, è sufficiente compilarli tramite i seguenti comandi  (dalla cartella in cui si è clonato il repository):
 \begin{verbatim}
-   $ ./configure --enable-maintainer-mode --enable-stlink
-   $ make
-   # make install
+$ ./configure --enable-maintainer-mode --enable-stlink
+$ make
+# make install
 \end{verbatim}
 L’ultimo comando serve per installare OpenOCD nelle cartelle di sistema, e dev'essere eseguito con i privilegi di root.
+\end{nota}
 
 \item Scaricare i sorgenti di ChibiOS da \url{http://chibios.org}. Una volta scaricato e decompresso l'archivio, aprire il \verb|Makefile| presente nella cartella FirmwareSpykee e modificare la riga
 \begin{verbatim}
-   CHIBIOS=/home/stm32/Workspace/libs/ChibiOS
+CHIBIOS=/home/stm32/Workspace/libs/ChibiOS
 \end{verbatim}
 inserendo il percorso corretto. Il firmware è stato testato con la versione 2.4.1 di ChibiOS.
 \end{enumerate}
@@ -49,31 +106,31 @@ inserendo il percorso corretto. Il firmware è stato testato con la versione 2.4
 
 \paragraph{Compilazione} Posizionarsi nella cartella FirmwareSpykee e dare il comando
 \begin{verbatim}
-   $ make
+$ make
 \end{verbatim}
 Se la compilazione ha successo, viene prodotto il file \verb|ch.elf| nella sottocartella \verb|build|.
 
 \paragraph{Installazione} Per caricare il firmware sulla scheda, è necessario prima di tutto collegare la scheda al computer e avviare OpenOCD con il comando
 \begin{verbatim}
-   $ openocd -f board/stm32f4discovery.cfg
+$ openocd -f board/stm32f4discovery.cfg
 \end{verbatim}
 Quindi, mantenendo aperto OpenOCD, collegare il debugger gdb:
 \begin{verbatim}
-   $ arm-none-eabi-gdb ch.elf
-   (gdb) target extended-remote localhost:3333
+$ arm-none-eabi-gdb ch.elf
+(gdb) target extended-remote localhost:3333
 \end{verbatim}
 dove \verb|ch.elf| è il percorso del firmware compilato che si vuole caricare sulla scheda. Una volta che \verb|gdb| è connesso ad OpenOCD, la seguente sequenza di comandi cancella il contenuto della memoria FLASH, carica il nuovo firmware, e quindi lo avvia:
 \begin{verbatim}
-   (gdb) monitor reset halt
-   (gdb) monitor flash probe 0 
-   (gdb) monitor stm32f2x mass_erase 0 
-   (gdb) load 
-   (gdb) monitor reset halt 
-   (gdb) continue
+(gdb) monitor reset halt
+(gdb) monitor flash probe 0 
+(gdb) monitor stm32f2x mass_erase 0 
+(gdb) load 
+(gdb) monitor reset halt 
+(gdb) continue
 \end{verbatim}
 
-\textbf{Nota } A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l’utility ST Visual Programmer (disponibile solo per Windows).
-%TODO non so se è il caso di mettere qui la corrispondenza pin <-> connessione o basta metterla nel README nella cartella FirmwareSpykee
+\begin{nota} A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l’utility ST Visual Programmer (disponibile solo per Windows).
+\end{nota}
 
 \section{Collegamenti hardware}
 Il file board.h permette di configurare le funzioni assegnate ai vari della Discovery Board presente nel robot. Attualmente, i pin presenti sulla scheda sono assegnati in questo modo:
