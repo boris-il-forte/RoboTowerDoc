@@ -1,3 +1,4 @@
+# latex stuff
 *.aux
 *.glo
 *.idx
@@ -21,4 +22,9 @@
 *.mtc1
 *.out
 *.synctex.gz
+
+# the pdf output (not the pdf of the images...)
 RoboTower.pdf
+
+# cache files from the OS
+~*
