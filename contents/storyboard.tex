@@ -30,59 +30,57 @@ Per questi motivi, è possibile utilizzare sia robot commerciali, come lo Spykee
 
 Per rendere più coinvolgente e realistico il gioco, è preferibile - anche se non indispensabile - che il robot sia dotato di una o più armi (un lanciatore di palle, ad esempio) per colpire gli oggetti presenti nel gioco, come descritto in seguito.
 
-\subsection*{Computer} Un computer svolge la funzione di arbitro e segnapunti. Viene utilizzato per dare inizio al gioco, impostare il livello di difficoltà, calcolare i crediti a disposizione del giocatore, e tramite input da tastiera (o grafico) permette di acquistare nuove trappole. Segna inoltre quanto manca alla fine del round, ossa il tempo che rimane al robot per raggiungere il suo obiettivo.
+\subsection*{Computer} Un computer svolge la funzione di arbitro e segnapunti. Viene utilizzato per dare inizio al gioco, calcolare i crediti del giocatore, visualizzare lo stato di attivazione delle trappole. Segna inoltre quanto manca alla fine del round, ossa il tempo che rimane al robot per raggiungere il suo obiettivo.
+Infine il computer tiene traccia delle statistiche di gioco, come il numero di partite giocate, il numero di vittorie e sconfitte e i crediti di gioco totali del giocatore alla fine di ogni round
 
 \section{Oggetti coinvolti}
 Oltre al robot e al computer, già descritti nella sezione precedente, lo svolgimento del gioco prevede la presenza di altri oggetti: la torre, gli ostacoli, e le fabbriche.
 
-\subsection*{Torre} La torre è un oggetto di un colore uniforme e particolare (ad esempio, un birillo di plastica). Il colore della torre deve essere differente da quello degli altri oggetti presenti nel campo di gioco, in modo che il robot possa riconoscerla tramite una telecamera, ed eventualmente anche calcolare la distanza a cui si trova. 
+\subsection*{Torre} La torre è un tubo di cartone di colore rosso uniforme. Il colore della torre deve essere differente da quello degli altri oggetti presenti nel campo di gioco, in modo che il robot possa riconoscerla tramite una telecamera, ed eventualmente anche calcolare la distanza a cui si trova. Inoltre la torre è dotata di un dispositivo di segnalazione radio, per indicare al robot l'avvenuto abbattimento della torre.
 
-La torre dev'essere abbattuta dal robot. Se il robot è dotato di armi, la torre viene distrutta quando viene colpita (oppure quando viene colpito un apposito bersaglio posto al di sopra di essa, a seconda della potenza delle armi in dotazione al robot). In caso contrario, la torre - realizzata con un materiale sufficientemente leggero - viene fisicamente abbattuta quando urtata dal robot.
+La torre dev'essere abbattuta dal robot. per farlo, il robot dovrà caricare la torre ed abbatterla.
 
-\subsection*{Fabbriche} Le fabbriche sono oggetti di un colore uniforme e non presente in altri oggetti del campo di gioco (ad esempio, cubetti di plastica). Come nel caso della torre, le fabbriche devono essere riconosciute e possono essere distrutte dal robot.
+\subsection*{Fabbriche} Le fabbriche sono oggetti di colore giallo uniforme che non sia simile a quello di altri oggetti del campo di gioco. Come nel caso della torre, le fabbriche devono essere riconosciute e possono essere distrutte dal robot. anche le fabbriche sono dotate di radiosegnale per indicare l'avvenuta distruzione al robot.
 
 Ogni fabbrica (che viene posizionata all'inizio della partita) produce costantemente \emph{crediti di gioco}, finché non viene abbattuta dal robot.
 
 \subsection*{Ostacoli} All'interno del gioco, ci sono due tipologie di ostacoli: gli ostacoli fisici e le trappole.
 	\begin{itemize}
 	\item Gli \emph{ostacoli fisici} rappresentano ostacoli insormontabili (come torrette difensive, barriere, montagne, mura). Sono una serie di oggetti a disposizione del giocatore che il robot non può spostare né abbattere, ma solo evitare. A differenza degli altri ostacoli, e come per le fabbriche, possono essere posizionati solo a inizio partita.
-	\item Le \emph{trappole} sono ostacoli che modificano il comportamento del robot. Quando il robot passa sopra (o vicino a) questi ostacoli, a seconda della trappola in cui è incappato, svolge delle azioni:
+	\item Le \emph{trappole} sono ostacoli che modificano il comportamento del robot. Quando il robot passa sopra a questi ostacoli, a seconda della trappola in cui è incappato, svolge delle azioni:
 		\begin{itemize}
 		\item il robot viene obbligato a compiere un particolare movimento, ad esempio girare a destra o a sinistra, oppure tornare indietro (la direzione deve essere mantenuta per alcuni secondi)
 		\item il robot viene bloccato completamente per un certo numero di secondi
-		\item alcune funzionalità del robot vengono temporaneamente disabilitate o modificate per un certo periodo. Il robot può perdere la vista, la possibilità di aprire il fuoco, diminuire la velocità o la capacità di cambiare direzione.
+		\item alcune funzionalità del robot vengono temporaneamente disabilitate o modificate per un certo periodo. Il robot può perdere la vista, diminuire la velocità o la capacità di cambiare direzione.
 		\end{itemize}
 	Questi ostacoli possono avere un effetto ben noto al giocatore, oppure possono avere effetti casuali, e anche negativi nei confronti del giocatore, come l'aumento di velocità del robot, oppure dell'energia del robot (ossia la durata massima del round).
 	\end{itemize}
 
 \section{Durata} 
-La durata del gioco è fortemente dipendente dal livello di difficoltà scelto dal giocatore, ed eventualmente da impostazioni avanzate, come la grandezza del campo di gioco e numero di partecipanti.
+Ogni round dura circa 5 minuti. può essere fermato il tempo in caso di problemi al robot, come ad esempio se il robot cade a causa di ostacoli non idonei sul campo di gioco.
 
-Il gioco può terminare prima (o dopo) se la durata viene modificata da una trappola o se il robot si arrende, non essendo in condizioni di proseguire (ad esempio se il robot non riesce più a muoversi a causa di impedimenti fisici, come il fatto che accidentalmente cada). 
+Il gioco può terminare prima o dopo se la durata viene modificata da una trappola.
 
 \section{Regole del gioco} 
 Il gioco è strutturato in vari \emph{round}, ognuno dei quali può essere vinto dal robot o dal giocatore. Al termine della partita viene dichiarato vincitore chi, tra il robot e il giocatore, vince il maggior numero di round.
 
 All'inizio del gioco, il robot è posizionato nella propria base. Gli ostacoli sono posizionati in un luogo (il ``deposito ostacoli'') posto, a discrezione del giocatore, a una certa distanza dall'area in cui verrà posizionata la torre, per rendere il gioco più (o meno) dinamico.
 
-Prima di iniziare la partita, il giocatore imposta il \emph{livello di difficoltà}. A seconda del livello impostato, verranno modificati alcuni parametri del gioco, descritti nel seguito. Al termine di ogni round, il livello di difficoltà viene modificato per adattarsi alle caratteristiche del giocatore: in particolare, aumenta in caso di vittoria del giocatore e diminuisce in caso di vittoria del robot.
-
 
 	\subsection*{Preparazione}
 Il giocatore, prima dell'inizio di ogni round, posiziona la torre, poi dà avvio al gioco e posiziona gli ostacoli fisici e le fabbriche.
 
-A seguito dell'avvio del gioco, dopo alcuni secondi, che variano col livello di difficoltà, il robot comincia a dirigersi verso la torre, cercando di evitare gli ostacoli.
+A seguito dell'avvio del gioco, dopo 30 secondi, il robot comincia a dirigersi verso la torre, cercando di evitare gli ostacoli.
 	
 	\subsection*{Svolgimento}
 	Durante lo svolgimento del gioco, il giocatore può posizionare le trappole, cercando di evitare l'avanzata del robot. Il robot cerca di dirigersi verso la torre e abbatterla, evitando gli ostacoli fisici e rispettando gli ordini di quelli concettuali.
 
 Il robot è dotato di una certa quantità di \emph{energia}. L'energia residua del robot è rappresentata dal tempo residuo del round, terminato il quale il robot si disattiva e non è più in grado di continuare, consegnando la vittoria al giocatore.
 
-Gli ostacoli hanno un costo in \emph{crediti di gioco}, che dipendono da quelli iniziali (consumati anche dagli ostacoli fisici) e da quelli prodotti dalle fabbriche durante lo svolgimento del gioco. Ogni classe di trappola ha un costo a seconda della sua efficacia, e il giocatore deve comprarne una alla volta, dal terminale, prima di poterle posizionare dove meglio crede.
+All'inizio del round il giocatore avrà a disposizione l'intero mazzo di carte trappola. Una volta attivata la trappola, essa viene disabilitata e sarà necessario atendere un tempo di rigenerazione, che dipende dalla quantità di fabbriche sul campo attive sul campo di gioco. Più fabbriche sono attive, più le trappole si rigeneranno velocemente.
 
 	\subsection*{Conclusione} 
-Il round termina quando il robot esaurisce tutta la sua energia oppure riesce ad abbattere il giocatore. In particolare, il giocatore vince il round quando il robot esaurisce tutta la sua energia, ossia finisce il tempo senza che venga abbattuta la torre, mentre il robot vince il round se riesce ad abbattere la torre prima del termine del tempo.
-
-Al termine di ogni round viene automaticamente variato il livello di difficoltà. L'energia del robot e i crediti di gioco a disposizione vengono impostati alla quantità definita dal livello di difficoltà. Gli ostacoli vengono riportati nel deposito ostacoli.
-
+Il round termina quando il robot esaurisce tutta la sua energia oppure riesce ad abbattere la torre. In particolare, il giocatore vince il round quando il robot esaurisce tutta la sua energia, ossia finisce il tempo senza che venga abbattuta la torre, mentre il robot vince il round se riesce ad abbattere la torre prima del termine del tempo.
+Al termine di ogni round gli ostacoli vengono riportati nel deposito ostacoli.
+Inoltre i \emph{crediti di gioco} guadagnati andranno a sommarsi allo score del giocatore a fine partita, sia che il giocatore vinca la partita, sia che sia stato sconfitto dal robot.
 A questo punto, il giocatore è pronto per iniziare un altro round.
