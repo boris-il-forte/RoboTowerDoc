@@ -3,15 +3,17 @@
 
 Per semplificare l'implementazione del sistema e agevolare il riuso del codice esistente, è stato utilizzato ROS (Robot Operating System) \cite{rosweb}. Si tratta di un middleware appositamente sviluppato per applicazioni robotiche costituite da un elevato numero di moduli relativamente indipendenti e interagenti tra loro.
 
-Un sistema realizzato con ROS è suddiviso in un certo numero di \emph{nodi}, ovvero semplici processi indipendenti ed eseguiti in parallelo, che svolgono ciascuno una funzione elementare. I nodi possono poi essere raggruppati in \emph{packages}. A loro volta, un gruppo di packages può formare uno \emph{stack}.
+Un sistema realizzato con ROS è suddiviso in un certo numero di \emph{nodi}, ovvero semplici processi\footnote{attualmente ROS supporta C++ e Python} indipendenti ed eseguiti in parallelo, che svolgono ciascuno una funzione elementare. Per migliorare l'organizzazione e la distribuzione dei sorgenti, i nodi possono poi essere raggruppati in \emph{package}. A loro volta, un gruppo di package può formare uno \emph{stack}.
 
-I nodi possono comunicare tra loro, utilizzando i meccanismi di comunicazione interprocesso messi a disposizione da ROS in due modi:
+Le due differenti metodologie che mette a disposizione l'infrastruttura di ROS per permettere ai diversi processi di comunicare sono:
 \begin{itemize}
- \item secondo un paradigma ``publish-subscribe'', scambiandosi \emph{messaggi} su un certo \emph{argomento} (\emph{topic})
- \item invocando \emph{servizi} offerti da altri nodi, secondo una semantica simile a quella di una chiamata a funzione
+ \item un paradigma ``publish-subscribe'', in cui i nodi inviano (pubblicano) \emph{messaggi} su un certo \emph{argomento} (\emph{topic}), a cui i nodi destinatari della comunicazione si iscrivono
+ \item l'invocazioen di \emph{servizi} esposti da altri nodi, secondo una semantica simile a quella di una chiamata a funzione
 \end{itemize}
 
-Il sistema realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware.
+Oltre a funzionare come middleware di comunicazione interprocesso, ROS mette a disposizione alcuni programmi e librerie aggiuntive che svolgono funzioni utili allo sviluppo di applicazioni robotiche.
+
+Il sistema da noi realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware. Nei paragrafi successivi verranno presentate le funzioni svolte dai singoli nodi.
 
 \begin{figure}[h]
 \input{images/schemanodi.tex}
@@ -19,19 +21,17 @@ Il sistema realizzato risulta composto da vari nodi, ciascuno contenuto in un pa
 \label{fig:schemanodi}
 \end{figure}
 
-Nei paragrafi successivi verranno presentate le funzioni svolte dai singoli nodi.
-
-%TODO È IL CASO DI METTERE QUI LE DESCRIZIONI COMPLETE DEI MESSAGGI???
+%TODO È IL CASO DI METTERE QUI LE DESCRIZIONI COMPLETE DEI MESSAGGI??? In generale, come la organizziamo questa parte?
 
 \section{SpyKee}
-Il nodo \emph{SpyKee} controlla le comunicazioni che avvengono tra unità di elaborazione e robot via Wi-Fi (ossia i comandi forniti ai cingoli e le immagini catturate dalla telecamera). È l'adattamento a ROS della libreria realizzata nei precedenti progetti.
+Il nodo \emph{SpyKee} controlla le comunicazioni che avvengono tra unità di elaborazione e robot via Wi-Fi: i comandi forniti ai cingoli e le immagini catturate dalla telecamera. Questo nodo è l'adattamento a ROS della libreria realizzata nei precedenti progetti mediante l'analisi (tramite un software di sniffing di rete) dei pacchetti scambiati tra il robot e il software di controllo fornito dalla Meccano.
 
-SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini, compresse in formato JPEG, ricevute dalla telecamera. Inoltre il nodo sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli\footnote{espressi in termini di due interi compresi tra $-90$ e $90$ che rappresentano la velocità tangenziale e angolare del robot, e che vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro}.
+SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini ricevute dalla telecamera, compresse in formato JPEG. Inoltre il nodo sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli. Tali comandi costituiti da due interi compresi tra $-90$ e $90$ che rappresentano la velocità tangenziale e angolare del robot, e che vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro.
 
 \section{Echoes}
 \emph{Echoes} comunica via Zigbee con l'hardware aggiunto a posteriori al robot: sonar, led, lettore RFID, ricevitori dei comandi inviati dagli interruttori posti sulle torri e sulle fabbriche.
 
-Questo nodo pubblica messaggi contenenti i dati rilevati:
+Il nodo riceve i dati dalla porta seriale\footnote{di default da \texttt{/dev/ttyUSB0}, nel caso il dispositivo abbia un percorso differente questo dev'essere specificato da riga di comando come primo argomento}, effettua il parsing delle stringhe ricevute, e pubblica messaggi contenenti i dati rilevati:
 \begin{itemize}
 	\item \verb|Echoes::Sonar|, sull'argomento \verb|sonar_data|, contenenti i dati ricevuti dai sonar (valori delle distanze dei quattro sonar montati sul robot, espresse in millimetri). 
 	\item \verb|Echoes::Rfid|, sull'argomento \verb|rfid_data|, contenenti semplicemente una stringa identificativa del tag RFID rilevato
@@ -79,3 +79,13 @@ In aggiunta a quanto gestito mediante le regole fuzzy, il nodo si occupa di gest
 \end{itemize}
 
 %TODO interfaccia grafica? altro?
+
+\section{RoboTower\_Game: la logica di gioco}
+Il nodo \emph{RoboTower\_Game} gestisce sia la comunicazione con l'utente mediante un'apposita interfaccia grafica, che la logica ad alto livello del gioco (avvio e arresto delle partite, conteggio dei punti, ...). Interagisce con gli altri modi
+\begin{itemize}
+\item avviando e fermando IsAac
+\item comunicando a IsAac la riabilitazione di eventuali trappole (tag RFID)
+\item ricevendo da Echoes le informazioni riguardanti le torri e le fabbriche abbattute
+\end{itemize}
+
+%TODO espandere? screenshot?
