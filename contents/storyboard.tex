@@ -2,17 +2,13 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:descrizione}
 
-\section{Obiettivi}
-Scopo del gioco è la difesa, da parte del giocatore, di un oggetto (la ``torre'') dall'assalto del (o dei) robot.
+In questo capitolo vengono descritti gli elementi principali e le regole complete di \emph{RoboTower}, e vengono dettagliati i requisiti che devono soddisfare i vari elementi facenti parte del gioco.
 
-Per conseguire tale scopo, il giocatore può posizionare in maniera opportuna gli ostacoli a sua disposizione resistendo per un determinato tempo all'assalto del robot ed evitando che la torre venga distrutta.
+\section{Obiettivo}
+Scopo del gioco è la difesa, da parte del giocatore, di un oggetto (la ``torre'') dall'assalto del (o dei) robot. 
+Il giocatore, per conquistare la vittoria, deve posizionare in maniera opportuna i vari oggetti (ostacoli) a sua disposizione, e riuscire a resistere per un determinato periodo di tempo all'assalto del robot, evitando quindi la distruzione della torre.
 
-\section{Requisiti}
-
-\subsection*{Ambiente di gioco}
-Non ci sono particolari vincoli sulla struttura del campo di gioco. Il gioco può pertanto svolgersi sia in un ambiente chiuso, purché sufficientemente grande da permettere il posizionamento degli ostacoli e il movimento del robot, che all'esterno, purché la superficie sia adatta al movimento del robot.
-
-\subsection*{Destinatari}
+\section{Destinatari}
 Nella sua versione di base, il gioco si svolge tra un robot e un giocatore. È adatto a un target abbastanza vario, ed è rivolto a bambini e adulti tra 12 e i 60 anni.
 
 RoboTower può essere facilmente esteso a più giocatori sia in senso cooperativo che in senso competitivo:
@@ -20,6 +16,11 @@ RoboTower può essere facilmente esteso a più giocatori sia in senso cooperativ
 		\item È possibile introdurre diverse torri (e diversi set degli oggetti che verranno descritti in seguito), una per ogni giocatore. Ogni giocatore controlla la sua torre e tramite gli ostacoli cerca di allontanare il robot e ``convincerlo'' ad attaccare le altre torri (la strategia del robot potrebbe, ad esempio, cercare di attaccare la torre più vicina)
 		\item Si possono introdurre diversi giocatori e/o robot che cooperano rispettivamente alla difesa e alla distruzione dell'unica torre
 	\end{itemize}
+
+\section{Requisiti di base}
+
+\subsection*{Ambiente di gioco}
+Non ci sono particolari vincoli sulla struttura del campo di gioco. Il gioco può pertanto svolgersi sia in un ambiente chiuso, purché sufficientemente grande da permettere il posizionamento degli ostacoli e il movimento del robot, che all'esterno, purché la superficie sia adatta al movimento del robot.
 
 \subsection*{Robot}
 Il robot deve essere dotato di una telecamera per riconoscere gli ostacoli “fisici”, la torre e le trappole (costituite da marker a cui sono collegati contenuti concettuali). Sulla velocità non ci sono particolari requisiti, tuttavia deve essere sufficiente a rendere – in una certa misura – dinamico il gioco.
@@ -56,7 +57,7 @@ Tutte le fabbriche vengono posizionate nel campo di gioco all'inizio della parti
 	\end{itemize}
 
 \section{Durata} 
-Ogni round ha una durata costante (circa 5 minuti). In caso di problemi al robot (ad esempio se il robot cade a causa di ostacoli non idonei sul campo di gioco), può essere fermato il tempo in caso di problemi al robot. Inoltre, la durata del rount può essere eventualmente modificata dalle trappole.
+Ogni round ha una durata costante (circa 5 minuti). In caso di problemi al robot (ad esempio se il robot cade a causa di ostacoli non idonei sul campo di gioco), può essere fermato il tempo. Inoltre, la durata del round può essere eventualmente modificata dalle trappole.
 
 \section{Regole del gioco} 
 Il gioco è strutturato in vari \emph{round}, ognuno dei quali può essere vinto dal robot oppure dal giocatore. Al termine della partita viene dichiarato vincitore chi, tra il robot e il giocatore, vince il maggior numero di round. %TODO i crediti di gioco?
@@ -83,12 +84,11 @@ Inoltre i \emph{crediti di gioco} guadagnati andranno a sommarsi allo score del 
 A questo punto, il giocatore è pronto per iniziare un altro round. %TODO abbiamo detto come si calcolano i crediti di gioco?
 
 \begin{nota}
-Il gioco qui presentato può essere espanso in varie direzioni. Ad esempio, il gioco può essere articolato in diversi livelli di difficoltà, scelti dal giocatore all'inizio della partita, oppure selezionati automaticamente all'inizio di ogni round in base al punteggio raggiunto dal giocatore. Il livello di difficoltà può essere utilizzato sia per variare i comportamenti assunti dal robot durante il gioco, che per variare i parametri definiti dalle regole (l'energia del robot, il tempo di ricarica delle trappole, ...).
+Il gioco qui presentato può essere espanso in varie direzioni. Ad esempio, può essere articolato in diversi livelli di difficoltà, scelti dal giocatore all'inizio della partita, oppure selezionati automaticamente all'inizio di ogni round in base al punteggio raggiunto dal giocatore. Il livello di difficoltà può essere utilizzato sia per variare i comportamenti assunti dal robot durante il gioco, che per variare i parametri definiti dalle regole (l'energia del robot, il tempo di ricarica delle trappole, ...).
 \end{nota}
 
 \section{Scenari di gioco}
 In questo paragrafo viene riassunto lo schema generale di un round del gioco, specificati ulteriori dettagli del funzionamento, e presentati alcuni scenari d'uso.
-
 \begin{enumerate}
     \item Il giocatore posiziona il robot e la torre nella stanza
 	\item Il giocatore sceglie gli ostacoli fisici da usare e da avvio al gioco
@@ -111,7 +111,6 @@ In questo paragrafo viene riassunto lo schema generale di un round del gioco, sp
 	\item Se il giocatore resiste all’assalto del robot fino a far consumare la sua energia vitale completamente (il suo “Time to live”) vince il round.
 	\item Se il robot si trova in impossibilità di muoversi o ha qualche problema hardware, il gioco deve essere messo in pausa e si deve ovviare al problema prima di riprendere.
 	\end{enumerate}
-
 Alcune regole fondamentali del gioco risultano impossibili da verificare da parte della logica di gioco, o quantomeno risultano impossibili da verificare in maniera efficiente. Il rispetto di queste regole da parte del giocatore è pertanto basato sulla fiducia nei suoi confronti:
 	\begin{itemize}
 	\item Il giocatore non può colpire il robot.
