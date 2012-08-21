@@ -2,14 +2,14 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:descrizione}
 
-In questo capitolo vengono descritti gli elementi principali e le regole complete di \emph{RoboTower}, e vengono dettagliati i requisiti che devono soddisfare i vari elementi facenti parte del gioco.
+In questo capitolo vengono descritti gli elementi principali e le regole complete di \emph{RoboTower}, e vengono dettagliati i requisiti che devono soddisfare i vari componenti del gioco.
 
 \section{Obiettivo}
 Scopo del gioco è la difesa, da parte del giocatore, di un oggetto (la ``torre'') dall'assalto del (o dei) robot. 
-Il giocatore, per conquistare la vittoria, deve posizionare in maniera opportuna i vari oggetti (ostacoli) a sua disposizione, e riuscire a resistere per un determinato periodo di tempo all'assalto del robot, evitando quindi la distruzione della torre.
+Il giocatore, per conquistare la vittoria, deve posizionare in maniera opportuna i vari oggetti a sua disposizione (ostacoli), e riuscire a resistere per un determinato periodo di tempo all'assalto del robot, evitando quindi la distruzione della torre.
 
 \section{Destinatari}
-Nella sua versione di base, il gioco si svolge tra un robot e un giocatore. È adatto a un target abbastanza vario, ed è rivolto a bambini e adulti tra 12 e i 60 anni.
+Nella sua versione di base, il gioco si svolge tra un robot e un giocatore. È adatto a un target abbastanza vario, essendo rivolto a bambini e adulti tra i 12 e i 60 anni.
 
 RoboTower può essere facilmente esteso a più giocatori sia in senso cooperativo che in senso competitivo:
 	\begin{itemize}
@@ -25,13 +25,13 @@ Non ci sono particolari vincoli sulla struttura del campo di gioco. Il gioco pu�
 \subsection*{Robot}
 Il robot deve essere dotato di una telecamera per riconoscere gli ostacoli “fisici”, la torre e le trappole (costituite da marker a cui sono collegati contenuti concettuali). Sulla velocità non ci sono particolari requisiti, tuttavia deve essere sufficiente a rendere – in una certa misura – dinamico il gioco.
 
-Il robot deve comunque disporre di un collegamento wireless per comunicare dati al computer e, nel caso non sia dotato di un processore sufficientemente potente per effettuare il riconoscimento delle immagini e gestire la logica di gioco, ricevere i comandi.
+Il robot deve comunque disporre di un collegamento wireless per comunicare dati al computer e, nel caso non sia dotato di un processore sufficientemente potente per effettuare il riconoscimento delle immagini e gestire la logica di gioco, ricevere i comandi destinati agli attuatori.
 
 Per questi motivi, è possibile utilizzare sia robot commerciali, come lo Spykee della Meccano, che un robot appositamente costruito allo scopo.
 
-Per rendere più coinvolgente e realistico il gioco, è preferibile - anche se non indispensabile - che il robot sia dotato di una o più armi (un lanciatore di palle, ad esempio) per colpire gli oggetti presenti nel gioco, come descritto in seguito.
+Per rendere più coinvolgente e realistico il gioco, è preferibile - anche se non indispensabile - che il robot sia dotato di una o più armi (un lanciatore di palle, ad esempio) per colpire gli oggetti presenti nel gioco.
 
-\subsection*{Computer} Un computer svolge la funzione di arbitro e segnapunti. Viene utilizzato per dare inizio al gioco, calcolare i crediti del giocatore, nonché visualizzare lo stato di attivazione delle trappole. Inoltre, fornisce al giocatore le informazioni riguardanti lo stato del gioco (ad esempio il tempo che rimane alla fine del round, i crediti di gioco acquisiti) ed alcune statistiche (numero di partite giocate, il numero di vittorie e sconfitte).
+\subsection*{Computer} Un computer svolge la funzione di arbitro e segnapunti. Viene utilizzato per dare inizio al gioco, calcolare i crediti del giocatore, e visualizzare lo stato di attivazione delle trappole. Inoltre, fornisce al giocatore le informazioni sullo stato del gioco (ad esempio il tempo che rimane alla fine del round, i crediti di gioco acquisiti) e alcune statistiche (il numero di partite giocate, il numero di vittorie e sconfitte, \dots).
 
 \section{Oggetti coinvolti}
 Oltre al robot e al computer, già descritti nella sezione precedente, lo svolgimento del gioco prevede la presenza di altri oggetti: la torre, gli ostacoli, e le fabbriche.
