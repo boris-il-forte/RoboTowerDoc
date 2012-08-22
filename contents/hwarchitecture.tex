@@ -15,13 +15,15 @@ L'attore principale del gioco è il robot autonomo \emph{Spykee}, un modello com
 
 Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, il robot crea all'accensione una rete Wi-Fi ad-hoc.
 
-\paragraph{Aggiunte hardware} A partire da quanto già realizzato nei precedenti progetti, Spykee è stato dotato di ulteriori sensori che lo rendono adatto all'utilizzo all'interno del gioco.
-
-I componenti hardware aggiunti al robot sono controllati da un microcontrollore. A questo scopo è stata utilizzata una scheda STM32F4 Discovery Board della ST, dotata di un processore ARM Cortex M4, scelta per le sue caratteristiche, in particolare il grande numero di porte utilizzabili.
+\subsection*{Aggiunte hardware}
+A partire da quanto già realizzato nei precedenti progetti, Spykee è stato dotato di ulteriori sensori che lo rendono adatto all'utilizzo all'interno del gioco. Tutti i componenti hardware aggiunti al robot sono controllati da un microcontrollore. A questo scopo è stata utilizzata una scheda STM32F4 Discovery Board della ST, dotata di un processore ARM Cortex M4, scelta per le sue caratteristiche: in particolare il grande numero di porte (GPIO, timer, seriali) utilizzabili.
 
 Il firmware realizzato per controllare i vari dispositivi è stato sviluppato utilizzando il sistema operativo ChibiOS/RT\cite{chibios}. L'utilizzo di un sistema operativo per microcontrollori permette di utilizzare astrazioni quali thread e mutex, nonché di astrarre l'hardware sottostante, consentendo quindi una certa modularità (isolando ogni funzione in un thread indipendente) e quindi un rapido sviluppo del firmware.
 
-La Discovery Board comunica con l'unità di elaborazione tramite un collegamento wireless di tipo Zigbee (utilizzando un modulo XBee della Digi). Il protocollo Zigbee, è caratterizzato da una bassa velocità di trasmissione (comunque ampiamente sufficiente per gli scopi del progetto), ma da una buona facilità di utilizzo, specialmente in ambito embedded: viene infatti utilizzato come un collegamento seriale punto-punto tra microcontrollore e computer.
+La Discovery Board comunica con l'unità di elaborazione tramite un collegamento wireless di tipo Zigbee (utilizzando un modulo XBee della Digi). Il protocollo Zigbee è caratterizzato da una bassa velocità di trasmissione (comunque ampiamente sufficiente per gli scopi del progetto), ma da una buona facilità di utilizzo, specialmente in ambito embedded: viene infatti utilizzato come un collegamento seriale punto-punto tra microcontrollore e computer.
+
+%TODO sistemare!
+Le varie schede elettroniche sono state raccolte in una apposita scatola, e sono alimentate dal pacco batteria di Spykee tramite un regolatore di tensione, che permette di ridurre la tensione proveniente dalla batteria (circa $9$ V) a quella di $5$ V. Un apposito interruttore, posto a valle dell'interruttore di alimentazione di Spykee, permette di spegnere o accendere le aggiunte hardware.
 
 \begin{figure}[h]
 \centering
@@ -31,10 +33,11 @@ La Discovery Board comunica con l'unità di elaborazione tramite un collegamento
 
 \paragraph{Sonar e led} Il robot è stato dotato di quattro sonar MaxSonar(R)-EZ della MaxBotix, uno per ognuno dei punti cardinali (nord, sud, ovest, est), che permettono di rilevare, e quindi evitare, eventuali ostacoli incontrati durante il movimento del robot. L'aggiunta di questo tipo di dispositivi è necessaria in quanto il robot non è progettato per muoversi autonomamente, ma soltanto per ricevere comandi manuali. Inoltre, Spykee è stato dotato di due strisce di LED (quattro LED gialli, quattro rossi e uno verde) che permettono di mostrare alcune informazioni relative allo stato del robot e/o del gioco nel complesso.
 
-%TODO bisogna spiegare l'interfaccia del firmware? (comandi che riceve, pinout, ...)
+\begin{nota}
+Le altre aggiunte hardware verranno descritte nei paragrafi successivi, essendo strettamente collegate ad altri componenti del gioco.
+\end{nota}
 
-%TODO sistemare!
-Le varie schede elettroniche sono state raccolte in una apposita scatola, e sono alimentate dal pacco batteria di Spykee tramite un regolatore di tensione, che permette di ridurre la tensione proveniente dalla batteria (circa $9$ V) a quella di $5$ V. Un apposito interruttore, posto a valle dell'interruttore di alimentazione di Spykee, permette di spegnere o accendere le aggiunte hardware.
+%TODO bisogna spiegare l'interfaccia del firmware? (comandi che riceve, pinout, ...)
 
 \section{Ostacoli attivi}
 %TODO questa roba è tutta da sistemare!!!
