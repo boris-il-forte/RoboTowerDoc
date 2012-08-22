@@ -92,7 +92,7 @@ $ ./configure --enable-maintainer-mode --enable-stlink
 $ make
 # make install
 \end{verbatim}
-L’ultimo comando serve per installare OpenOCD nelle cartelle di sistema, e dev'essere eseguito con i privilegi di root.
+L'ultimo comando serve per installare OpenOCD nelle cartelle di sistema, e dev'essere eseguito con i privilegi di root.
 \end{nota}
 
 \item Scaricare i sorgenti di ChibiOS da \url{http://chibios.org}. Una volta scaricato e decompresso l'archivio, aprire il \verb|Makefile| presente nella cartella FirmwareSpykee e modificare la riga
@@ -129,7 +129,7 @@ dove \verb|ch.elf| è il percorso del firmware compilato che si vuole caricare s
 (gdb) continue
 \end{verbatim}
 
-\begin{nota} A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l’utility ST Visual Programmer (disponibile solo per Windows).
+\begin{nota} A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l'utility ST Visual Programmer (disponibile solo per Windows).
 \end{nota}
 
 \section{Collegamenti hardware}
@@ -152,6 +152,6 @@ Il file board.h permette di configurare le funzioni assegnate ai vari della Disc
 \item Lettore RFID (collegamento seriale a 9600 bps): \verb|PB11| (RX)
 \end{itemize}
 
-\paragraph{Alimentazione} Tutti i dispositivi (discovery board, xbee, lettore rfid, sonar, ricevitore atmel, driver per i led a infrarossi) vanno alimentati a +5V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
+\paragraph{Alimentazione} Tutti i dispositivi (discovery board, XBee, lettore RFID, sonar, ricevitore Atmel, driver per i led a infrarossi) vanno alimentati a $+5$V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
 
-\paragraph{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l’unità di elaborazione e il robot, pertanto per debuggare problemi di configurazione è sufficiente utilizzare un terminale seriale, come screen o minicom su Linux. Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi. Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di 19200 bps, e impostare come Destination Address (High e Low) il Serial Number dell’altro Xbee.
+\paragraph{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l'unità di elaborazione e il robot, pertanto per il debugging di problemi di configurazione è sufficiente utilizzare un terminale seriale, come \verb|screen| o \verb|minicom| su Linux. Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi. Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di $19200$ bps, e impostare come Destination Address (High e Low) il Serial Number dell'altro Xbee.

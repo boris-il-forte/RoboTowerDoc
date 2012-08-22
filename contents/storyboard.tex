@@ -23,7 +23,7 @@ RoboTower può essere facilmente esteso a più giocatori sia in senso cooperativ
 Non ci sono particolari vincoli sulla struttura del campo di gioco. Il gioco può pertanto svolgersi sia in un ambiente chiuso, purché sufficientemente grande da permettere il posizionamento degli ostacoli e il movimento del robot, che all'esterno, purché la superficie sia adatta al movimento del robot.
 
 \subsection*{Robot}
-Il robot deve essere dotato di una telecamera per riconoscere gli ostacoli “fisici”, la torre e le trappole (costituite da marker a cui sono collegati contenuti concettuali). Sulla velocità non ci sono particolari requisiti, tuttavia deve essere sufficiente a rendere – in una certa misura – dinamico il gioco.
+Il robot deve essere dotato di una telecamera per riconoscere gli ostacoli ``fisici'', la torre e le trappole (costituite da marker a cui sono collegati contenuti concettuali). Sulla velocità non ci sono particolari requisiti, tuttavia deve essere sufficiente a rendere – in una certa misura – dinamico il gioco.
 
 Il robot deve comunque disporre di un collegamento wireless per comunicare dati al computer e, nel caso non sia dotato di un processore sufficientemente potente per effettuare il riconoscimento delle immagini e gestire la logica di gioco, ricevere i comandi destinati agli attuatori.
 
@@ -97,8 +97,8 @@ In questo paragrafo viene riassunto lo schema generale di un round del gioco, sp
 	\item Il giocatore può acquistare una trappola e posizionarla se il suo credito è sufficiente. Può posizionare la trappola dove vuole, a condizione di prendere una trappola per volta e di piazzarla a più di 50 cm dal robot.
 	\item Il robot che cada in una trappola, subirà gli effetti imposti da essa, che possono essere:
 		\begin{enumerate}
-		\item Perdere energia vitale (si accorcia il suo “time to live”)
-		\item Aumentare la sua energia vitale (si allunga il suo “time to live”)
+		\item Perdere energia vitale (si accorcia il suo ``time to live'')
+		\item Aumentare la sua energia vitale (si allunga il suo ``time to live'')
 		\item Venire immobilizzato per alcuni secondi
 		\item Non potere vedere nulla nel suo campo visivo per alcuni secondi
 		\item Diminuire la velocità per alcuni secondi
@@ -108,7 +108,7 @@ In questo paragrafo viene riassunto lo schema generale di un round del gioco, sp
 		\end{enumerate}
 	\item Il robot può, se lo ritiene opportuno, distruggere le fabbriche, e diminuire la produzione di crediti del giocatore.
 	\item Se il robot distrugge la torre, ha vinto il round.
-	\item Se il giocatore resiste all’assalto del robot fino a far consumare la sua energia vitale completamente (il suo “Time to live”) vince il round.
+	\item Se il giocatore resiste all'assalto del robot fino a far consumare la sua energia vitale completamente (il suo ``Time to live'') vince il round.
 	\item Se il robot si trova in impossibilità di muoversi o ha qualche problema hardware, il gioco deve essere messo in pausa e si deve ovviare al problema prima di riprendere.
 	\end{enumerate}
 Alcune regole fondamentali del gioco risultano impossibili da verificare da parte della logica di gioco, o quantomeno risultano impossibili da verificare in maniera efficiente. Il rispetto di queste regole da parte del giocatore è pertanto basato sulla fiducia nei suoi confronti:
