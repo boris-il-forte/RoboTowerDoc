@@ -5,20 +5,23 @@
 In questo capitolo viene descritta in dettaglio la componentistica hardware utilizzata per l'implementazione del gioco.
 
 \section{Unità di elaborazione}
-Sia l'elaborazione dei dati trasmessi dal robot mediante che la definizione dei comportamenti del robot in base alle logiche di gioco sono gestiti da un elaboratore esterno. Inoltre, l'elaboratore viene utilizzato dal giocatore per controllare lo stato del gioco (punteggio, tempo rimanente, ...) e per gestire l'avvio dello stesso.
+Sia l'elaborazione dei dati trasmessi dal robot mediante che la definizione dei comportamenti del robot in base alle logiche di gioco sono gestiti da un elaboratore esterno. Inoltre, l'elaboratore viene utilizzato dal giocatore per controllare lo stato del gioco (punteggio, tempo rimanente, \dots) e per gestirne l'avvio.
 
 \section{Il robot}
 
-%TODO bisogna dire che per l'interpretazione dei pacchetti in arrivo è stato fatto reversing da un vecchio progetto etc etc etc?
+%TODO bisogna dire che per l'interpretazione dei pacchetti in arrivo è stato fatto reversing da un vecchio progetto etc etc etc? (forse meglio metterlo in architetture sw...)
 
 L'attore principale del gioco è il robot autonomo \emph{Spykee}, un modello commerciale della Meccano \cite{spykeeweb}, disponibile nel laboratorio di Intelligenza Artificiale e Robotica (AIRLab) del Politecnico di Milano. Questo modello è già stato utilizzato con successo in precedenti progetti nell'ambito dei Robogame\footnote{in particolare nelle varie versioni di Robowii, l'ultima delle quali è descritta in \cite{robowii}}.
 
-Spykee si muove tramite due cingoli (con tecnica differential drive) ed è dotato di una telecamera che permette di catturare immagini in formato \verb|JPEG| con una risoluzione di $320 \times 240$ pixel e a circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, il robot crea all'accensione una rete \verb|Wi-Fi| ad-hoc.
+Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, il robot crea all'accensione una rete Wi-Fi ad-hoc.
 
-\paragraph{Aggiunte hardware} A partire da quanto già realizzato in precedenti progetti, il robot è stato dotato di ulteriori sensori che lo rendono adatto all'utilizzo all'interno del gioco. Tutti i componenti hardware aggiunti al robot comunicano con l'unità di elaborazione tramite un collegamento wireless di tipo Zigbee (utilizzando un modulo XBee della Digi). Il protocollo Zigbee, è caratterizzato da una bassa velocità di trasmissione (comunque ampiamente sufficiente per gli scopi del progetto), ma da una buona facilità di utilizzo, specialmente in ambito embedded: viene infatti utilizzato come un collegamento seriale punto-punto tra i due dispositivi connessi.
+\paragraph{Aggiunte hardware} A partire da quanto già realizzato nei precedenti progetti, Spykee è stato dotato di ulteriori sensori che lo rendono adatto all'utilizzo all'interno del gioco.
 
-Per interfacciare i vari dispositivi con il canale Zigbee è stata montata sul robot una scheda STM32F4 Discovery Board della ST, dotata di un microcontrollore ARM Cortex M4. Il firmware che permette di controllare l'hardware aggiunto al robot è stato sviluppato per il sistema operativo ChibiOS/RT\cite{chibios}.
-L'utilizzo di un sistema operativo per microcontrollori permette di utilizzare astrazioni quali thread e mutex, nonché di astrarre l'hardware sottostante, consentendo quindi una certa modularità (isolando ogni funzione in un thread indipendente) e quindi un rapido sviluppo del firmware.
+I componenti hardware aggiunti al robot sono controllati da un microcontrollore. A questo scopo è stata utilizzata una scheda STM32F4 Discovery Board della ST, dotata di un processore ARM Cortex M4, scelta per le sue caratteristiche, in particolare il grande numero di porte utilizzabili.
+
+Il firmware realizzato per controllare i vari dispositivi è stato sviluppato utilizzando il sistema operativo ChibiOS/RT\cite{chibios}. L'utilizzo di un sistema operativo per microcontrollori permette di utilizzare astrazioni quali thread e mutex, nonché di astrarre l'hardware sottostante, consentendo quindi una certa modularità (isolando ogni funzione in un thread indipendente) e quindi un rapido sviluppo del firmware.
+
+La Discovery Board comunica con l'unità di elaborazione tramite un collegamento wireless di tipo Zigbee (utilizzando un modulo XBee della Digi). Il protocollo Zigbee, è caratterizzato da una bassa velocità di trasmissione (comunque ampiamente sufficiente per gli scopi del progetto), ma da una buona facilità di utilizzo, specialmente in ambito embedded: viene infatti utilizzato come un collegamento seriale punto-punto tra microcontrollore e computer.
 
 \begin{figure}[h]
 \centering
