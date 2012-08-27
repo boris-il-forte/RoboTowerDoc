@@ -1,19 +1,19 @@
 \chapter{Architettura software}
 \label{cap:architetturasw}
 
-Per semplificare l'implementazione del sistema e agevolare il riuso del codice esistente, è stato utilizzato ROS (Robot Operating System) \cite{rosweb}. Si tratta di un middleware appositamente sviluppato per applicazioni robotiche costituite da un elevato numero di moduli relativamente indipendenti e interagenti tra loro.
+Per semplificare l'implementazione e agevolare il riuso del codice esistente, il software è stato realizzato utilizzando ROS (Robot Operating System) \cite{rosweb}. Si tratta di un middleware appositamente sviluppato per applicazioni robotiche, costituite da un elevato numero di moduli relativamente indipendenti che interagiscono tra loro.
 
 Un sistema realizzato con ROS è suddiviso in un certo numero di \emph{nodi}, ovvero semplici processi\footnote{attualmente ROS supporta C++ e Python} indipendenti ed eseguiti in parallelo, che svolgono ciascuno una funzione elementare. Per migliorare l'organizzazione e la distribuzione dei sorgenti, i nodi possono poi essere raggruppati in \emph{package}. A loro volta, un gruppo di package può formare uno \emph{stack}.
 
-Le due differenti metodologie che mette a disposizione l'infrastruttura di ROS per permettere ai diversi processi di comunicare sono:
+ROS mette a disposizione due differenti tecniche con cui i nodi possono comunicare tra loro:
 \begin{itemize}
- \item un paradigma ``publish-subscribe'', in cui i nodi inviano (pubblicano) \emph{messaggi} su un certo \emph{argomento} (\emph{topic}), a cui i nodi destinatari della comunicazione si iscrivono
+ \item un paradigma ``publish-subscribe'': i nodi inviano (pubblicano) \emph{messaggi} su un certo \emph{argomento} (\emph{topic}), che vengono ricevuti dai nodi iscritti (subscribe), destinatari della comunicazione
  \item l'invocazione di \emph{servizi} esposti da altri nodi, secondo una semantica simile a quella di una chiamata a funzione
 \end{itemize}
 
 Oltre a funzionare come middleware di comunicazione interprocesso, ROS mette a disposizione alcuni programmi e librerie aggiuntive che svolgono funzioni utili allo sviluppo di applicazioni robotiche.
 
-Il sistema da noi realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware. Nei paragrafi successivi verranno presentate le funzioni svolte dai singoli nodi.
+Il sistema da noi realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi, dettagliati nei paragrafi successivi, sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware.
 
 \begin{figure}[h]
 \input{images/schemanodi.tex}
