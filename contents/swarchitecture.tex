@@ -13,7 +13,7 @@ ROS mette a disposizione due differenti tecniche con cui i nodi possono comunica
 
 Oltre a funzionare come middleware di comunicazione interprocesso, ROS mette a disposizione alcuni programmi e librerie aggiuntive che svolgono funzioni utili allo sviluppo di applicazioni robotiche.
 
-Il sistema da noi realizzato risulta composto da vari nodi, ciascuno contenuto in un package omonimo all'interno della directory principale del progetto. I nodi, dettagliati nei paragrafi successivi, sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware.
+Il sistema realizzato risulta composto da vari nodi, ciascuno contenuto in un omonimo package all'interno della directory principale del progetto. I nodi, dettagliati nei paragrafi successivi, sono rappresentati nella figura \ref{fig:schemanodi}, insieme alle loro interfacce (messaggi scambiati e servizi esposti) e alle principali interazioni con le altre librerie utilizzate (esterne a ROS) e/o l'hardware.
 
 \begin{figure}[h]
 \input{images/schemanodi.tex}
@@ -43,23 +43,21 @@ dove $\alpha = 0.3$, valore sufficientemente alto da rendere l'aggiornamento dei
 
 \section{Vision: identificazione degli oggetti}
 
-Il nodo Vision si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, per rilevare - mediante riconoscimento di un blob colorato - la presenza di una torre o di una fabbrica all'interno dell'immagine. Riceve da \emph{SpyKee} le immagini della telecamera ed effettua l'identificazione degli oggetti di interesse per il gioco contenuti nell'immagine (la torre e le fabbriche). Analizzata l'immagine, il nodo pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results| contenente i dati riguardanti gli oggetti trovati e la loro posizione rispetto al centro dell'immagine. %TODO DETTAGLIARE MESSAGGI
+Il nodo Vision si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, per rilevare la presenza di una torre o di una fabbrica all'interno dell'immagine. Riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results| contenente i dati riguardanti gli oggetti trovati e la loro posizione rispetto al centro dell'immagine. %TODO DETTAGLIARE MESSAGGI
 
-Il cuore del nodo è un algoritmo, sviluppato all'interno del framework MRT \cite{mrt}\footnote{e già utilizzato nel progetto \cite{docmandelli}, a cui si rimanda per ulteriori dettagli}, che si occupa di identificare, all'interno dell'immagine fornita, dei blob sufficientemente uniformi di colore ``simile'' a quello degli oggetti che si stanno cercando. Poiché l'analisi che viene effettuata per identificare le regioni di interesse si basa su un algoritmo di tipo KNN, è necessaria una prima fase di addestramento, che permette di ottenere un classificatore (un file \verb|.kcc|), mediante il quale è possibile associare ad ogni pixel dell'immagine, ossia ad ogni valore $(r,g,b)$, una classe (``torre'', ``fabbrica'' o ``niente'').
+Il cuore del nodo è un algoritmo, sviluppato all'interno del framework MRT \cite{mrt}\footnote{e già utilizzato nel progetto \cite{docmandelli}, a cui si rimanda per ulteriori dettagli}, che si occupa di identificare, all'interno dell'immagine fornita, dei blob sufficientemente uniformi di colore ``simile'' a quello degli oggetti che si stanno cercando.
+
+Poiché l'analisi che viene effettuata per identificare le regioni di interesse si basa su un algoritmo di tipo KNN, è necessaria una prima fase di addestramento, che permette di ottenere un classificatore (un file \verb|.kcc|), mediante il quale è possibile associare ad ogni pixel dell'immagine, ossia ad ogni valore $(r,g,b)$, una classe (``torre'', ``fabbrica'' o ``niente'').
 
 Il classificatore viene generato a partire da un file che contiene semplicemente un elenco di valori \verb|BGR| di pixel che si considerano del colore cercato. Per generare questo file è possibile utilizzare il nodo \emph{LittleEndian}, evidenziando nell'immagine ricevuta dal robot le aree che corrispondono agli oggetti cercati. È necessario prestare particolare attenzione nel training del classificatore, in quanto è una fase critica per il corretto funzionamento del gioco e il corretto riconoscimento degli oggetti. %% TODO TODO STA ROBA E' DA SISTEMARE!!!
 
 \section{IsAac: il comportamento del robot}
 IsAac si occupa di controllare il comportamento di basso livello del robot durante il gioco. Questo nodo ignora le problematiche relative al conteggio dei punti, all'avvio e alla conclusione della partita, e gestisce semplicemente il comportamento del robot (i set-point per i cingoli e l'accensione dei led presenti sul robot) in base alle regole del gioco e ai dati provenienti dai sensori. 
 
- \emph{IsAac} riceve i messaggi pubblicati da Echoes e Vision, e invia comandi a SpyKee (messaggi \verb|Spykee::Motion| sull'argomento \verb|spykee_motion|) riguardanti il controllo dei cingoli. Inoltre invoca il servizio \verb|led_data| esposto da Echoes per il controllo dei led posti sul robot.
-
-%TODO TODO DA AGGIUNGERE SPIEGAZIONI sintetiche SU BRIAN,FUZZY etc
-
-TODO ...
+ \emph{IsAac} riceve i messaggi pubblicati da Echoes e Vision, e invia comandi a SpyKee (messaggi \verb|Spykee::Motion| sull'argomento \verb|spykee_motion|) riguardanti il controllo dei cingoli. Inoltre invoca il servizio \verb|led_data| esposto da Echoes per il controllo dei led posti sul robot. Inoltre comunica con \verb|RoboTower_Game| per quanto concerne l'avvio e l'arresto del movimento del robot e la riattivazione dei tag RFID (che invece vengono disattivati da IsAac quando vengono rilevati).
 
 %TODO espandere?
-I comportamenti che sono stati implementati riguardano:
+I comportamenti che sono stati implementati mediante regole fuzzy riguardano:
 \begin{itemize}
  \item Cercare la torre o le fabbriche (casualmente)
  \item Raggiungere la torre o la fabbrica (una volta che è stata trovata)
@@ -86,4 +84,10 @@ Il nodo \emph{RoboTower\_Game} gestisce sia la comunicazione con l'utente median
 \item ricevendo da Echoes le informazioni riguardanti le torri e le fabbriche abbattute
 \end{itemize}
 
-%TODO espandere? screenshot?
+%TODO espandere? screenshot
+%TODO bisogna specificare come viene calcolato il punteggio ;)
+%TODO segnare funzionamento dei led...
+
+%TODO mettere settaggi in un file anziché come costanti nel codice...
+
+%TODO riconoscimento giocatore x evitare che si metta davanti alla torre...
