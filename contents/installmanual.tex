@@ -46,7 +46,7 @@ $ make
 $ roslocate info opencv2 > opencv2.rosinstall
 $ rosinstall ~/ros opencv2.rosinstall
 \end{verbatim}
-\paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git (git clone git://github.com/pogliamarci/robotower.git) oppure dall'airwiki in una cartella qualunque. Nel seguito, si suppone che i sorgenti siano disponibili nella cartella \verb|robotower| nella home.
+\paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git (git clone \url{git://github.com/pogliamarci/robotower.git}) oppure dalla pagina del progetto sull'airwiki in una cartella qualunque. Nel seguito, si suppone che i sorgenti siano disponibili nella cartella \verb|robotower| nella home.
 
 Una volta scaricati i file, è necessario nel \verb|ROS_PACKAGE_PATH| la cartella del progetto, aggiungendo al file :
 \begin{verbatim}
@@ -65,11 +65,11 @@ dalla cartella principale del progetto.
 In alternativa, è possibile utilizzare il comando \verb|rosmake <nome_package>| per ognuno dei package realizzati. Quest'ultimo comando dovrebbe tentare di compilare e/o risolvere automaticamente le dipendenze, ma in generale risulta più lento e fornisce meno indicazioni sullo standard output rispetto all'utilizzo di \verb|make|.
 \end{nota}
 
-\section{Avvio del gioco} Per avviare ROS e i nodi che controllano il robot, è sufficiente il comando
+\section{Avvio del gioco} Una volta collegato al computer lo XBee e acceso il robot, collegarsi alla rete wireless creata da Spykee (il cui SSID è SPYKEE seguito dal codice identificativo del robot). A questo punto, per avviare ROS e tutti i nodi che controllano il robot, è sufficiente utilizzare il comando
 \begin{verbatim}
 $ roslaunch spykee.launch
 \end{verbatim}
-dalla cartella del progetto. Per avviare il gioco, avviare il programma \verb|isaac| presente nella directory \verb|IsAac/bin| e il programma \verb|roboTower| presente in \verb|RoboTower_Game/bin|. Per fermare il robot, è sufficiente chiudere quest'ultimo programma.
+dalla cartella del progetto.
 
 \section{Firmware del microcontrollore}
 

@@ -23,7 +23,7 @@
 
 \draw [->,thick,dashed,  shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|Zigbee}}}] (robot.south) to [bend right=7]  (echoes.west);
 
-\draw [<-,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|spykee motion}}}] (spykee) to (isaac);
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|spykee motion}}}] (isaac) to (spykee);
 
 \draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|enable, actions}}}] (robotowergame) to (isaac);
 
