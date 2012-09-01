@@ -2,6 +2,13 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:conclusioni}
 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{images/attaccotorre}
+\caption{Spykee va all'attacco della torre, dopo aver distrutto una fabbrica}
+\end{figure}
+
 Le maggiori problematiche nell'implementazione del gioco sono dovute ai limiti dell'hardware: in particolare la visione e il controllo del movimento. 
 
 La visione è penalizzata sia dalla bassa risoluzione dell'immagine sia dalla forte compressione jpeg a cui è sottoposta (e che purtroppo non può essere evitata). Questo rende l'individuazione dei blob imprecisa e difficoltosa. Altri problemi della visione sono legati alla forte dipendenza alle condizioni di luminosità dell'algoritmo di visione utilizzato, che rende necessario riclassificare più volte i colori a seconda delle condizioni di luce. Utilizzando algoritmi di visione basati su HSV si potrebbe limitare la necessità di riclassificare gli oggetti per diverse ore della giornata, e una compressione minore jpeg (o meglio ancora, delle immagini raw) potrebbero rendere l'identificazione del blob meno soggetta a rumore, e quindi più efficacie per fare inferenza sui dati.
@@ -13,3 +20,5 @@ I maggiori successi nell'implementazione del robot provengono dallo sfruttamento
 In particolare i movimenti del robot sono resi più efficaci dalla separazione a livelli delle regole da applicare, feature che permette di disaccoppiare i movimenti come la ricerca e il puntamento degli obbiettivi (torri, fabbriche) dalle reazioni ad eventuali stimoli esterni quali ad esempio gli ostacoli fisici.
 
 Altri ottimi risultati sono arrivati grazie alla libreria ROS (Robot Operating System), che nonostante dia molte difficoltà nella configurazione, offre un ottimo middleware sia per l'architettura client/server che per l'architettura publish/subscribe, e fornisce inoltre moltissimi tool grafici e da linea di comando per semplificare il debug e il design delle applicazioni. Inoltre ROS favorisce il disaccoppiamento delle parti del sistema, in quanto ogni "nodo" del sistema è eseguito in un processo separato. Questa feature permette di delocalizzare su macchine differenti l'esecuzione dei nodi, inoltre favorisce la riusabilità dei componenti in quanto risultano debolmente accoppiati. E' facile quindi re-implementare parte del codice per portare RoboTower su altri robot.
+
+%TODO riconoscimento giocatore x evitare che si metta davanti alla torre...

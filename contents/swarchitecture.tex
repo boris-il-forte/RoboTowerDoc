@@ -29,13 +29,13 @@ SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento
 \section{Echoes}
 Il nodo \emph{Echoes} comunica via Zigbee con l'hardware aggiunto a posteriori al robot: sonar, led, lettore RFID, e ricevitori dei comandi inviati dagli interruttori posti sulle torri e sulle fabbriche.
 
-Il nodo riceve i dati dalla porta seriale\footnote{di default dal device \texttt{/dev/ttyUSB0}, altrimenti il percorso del dispositivo deve essere specificato come primo argomento da riga di comandoo}, effettua il parsing delle stringhe ricevute, e pubblica messaggi contenenti i dati rilevati:
+Il nodo riceve i dati dalla porta seriale\footnote{di default viene utilizzato il device \texttt{/dev/ttyUSB0}, altrimenti il percorso del dispositivo deve essere fornito da riga di comando come primo argomento}, effettua il parsing delle stringhe ricevute, e pubblica i messaggi contenenti i dati rilevati:
 \begin{itemize}
 	\item \verb|Echoes::Sonar|, sull'argomento \verb|sonar_data|, contenenti i dati ricevuti dai sonar (valori delle distanze dei quattro sonar montati sul robot, espresse in millimetri).
 	\item \verb|Echoes::Rfid|, sull'argomento \verb|rfid_data|, contenenti semplicemente una stringa identificativa del tag RFID rilevato
-	\item \verb|Echoes::Towers|, sull'argomento \verb|towers_data|, contenente lo stato della torre (abbattuta/non abbattuta) e il numero di fabbriche che sono state abbattute dall'inizio del gioco. %TODO il reset!!!
+	\item \verb|Echoes::Tower| sull'argomento \verb|towers_data|, contenente un intero che corrisponde all'id della torre (o della fabbrica) abbattuta
 \end{itemize}
-Inoltre espone un servizio di tipo \verb|Echoes::Led| che permette di controllare l'accensione dei led (in particolare, il \emph{numero} di led rossi che si vogliono accendere, e l'accensione di ogni singolo led per quanto riguarda i led gialli e il led verde montato sulla testa di Spykee). %TODO AGGIUNGERE RFID, APRICANCELLI E SISTEMARE LED!!!
+Inoltre, il nodo espone un servizio di tipo \verb|Echoes::Led| che permette di controllare l'accensione dei led, e un altro servizio che consente di spegnere tutti i led. I led possono essere impostati nello stato di acceso, spento o lampeggiante. In particolare, per i led gialli e i led rossi, lo stato lampeggiante viene definito a livello dell'intero gruppo di led.
 
 A causa dell'alto rumore presente nei valori provenienti dai sonar, il valore che viene pubblicato sul topic \verb|sonar_data| è filtrato attraverso un filtro a media mobile esponenziale. Questo significa che il dato pubblicato all'arrivo del $k$-esimo campione $x_{cur}$ registrato dal sonar è dato da %TODO sicuri che alpha = 0.3?!?
   \[ x_k = \alpha x_{cur} + (1 - \alpha) x_{k-1} \]
@@ -43,51 +43,109 @@ dove $\alpha = 0.3$, valore sufficientemente alto da rendere l'aggiornamento dei
 
 \section{Vision: identificazione degli oggetti}
 
-Il nodo Vision si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, per rilevare la presenza di una torre o di una fabbrica all'interno dell'immagine. Riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results| contenente i dati riguardanti gli oggetti trovati e la loro posizione rispetto al centro dell'immagine. %TODO DETTAGLIARE MESSAGGI
+\emph{Vision} si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, per rilevare la presenza di una torre o di una fabbrica. 
 
-Il cuore del nodo è un algoritmo, sviluppato all'interno del framework MRT \cite{mrt}\footnote{e già utilizzato nel progetto \cite{docmandelli}, a cui si rimanda per ulteriori dettagli}, che si occupa di identificare, all'interno dell'immagine fornita, dei blob sufficientemente uniformi di colore ``simile'' a quello degli oggetti che si stanno cercando.
+Riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results|. Questo messaggio contiene contenente i dati riguardanti gli oggetti trovati: in particolare, la posizione rispetto al centro dell'immagine, una stima della distanza in centimetri, e l'altezza e la larghezza del blob in pixel.
 
-Poiché l'analisi che viene effettuata per identificare le regioni di interesse si basa su un algoritmo di tipo KNN, è necessaria una prima fase di addestramento, che permette di ottenere un classificatore (un file \verb|.kcc|), mediante il quale è possibile associare ad ogni pixel dell'immagine, ossia ad ogni valore $(r,g,b)$, una classe (``torre'', ``fabbrica'' o ``niente'').
+Il cuore del nodo è un algoritmo, già utilizzato nel progetto \cite{docmandelli}, che si occupa di identificare all'interno dell'immagine dei blob sufficientemente uniformi e di colore ``simile'' a quello degli oggetti che si stanno cercando. L'analisi viene effettuata basandosi su un algoritmo di tipo KNN, che necessita di una prima fase di addestramento. Al termine di questa fase, viene generato un classificatore (contenuto in un file \verb|.kcc|), tramite il quale l'algoritmo è in grado di associare ad ogni pixel dell'immagine una classe di identificazione. Le classi definite riguardano i pixel di colore simile a quello di una ``torre'' (classe R), oppure di una ``fabbrica'' (classe G). Una volta effettuata la classificazione dei pixel dell'immagine, viene eseguito un algoritmo per rilevare all'interno dell'immagine i blob di interesse, e quindi stabilire se all'interno dell'immagine è presente una torre o una fabbrica.
 
-Il classificatore viene generato a partire da un file che contiene semplicemente un elenco di valori \verb|BGR| di pixel che si considerano del colore cercato. Per generare questo file è possibile utilizzare il nodo \emph{LittleEndian}, evidenziando nell'immagine ricevuta dal robot le aree che corrispondono agli oggetti cercati. È necessario prestare particolare attenzione nel training del classificatore, in quanto è una fase critica per il corretto funzionamento del gioco e il corretto riconoscimento degli oggetti. %% TODO TODO STA ROBA E' DA SISTEMARE!!!
+Il classificatore viene generato a partire da un file che contiene semplicemente un elenco di valori \verb|BGR| di pixel che si considerano del colore cercato. Per generare questo file è possibile utilizzare il nodo \emph{LittleEndian}: questo nodo carica le immagini da file oppure le riceve direttamente da \emph{SpyKee}, e consente di evidenziare nell'immagine le aree che corrispondono agli oggetti cercati, generando un file \verb|.dts| contenente l'insieme dei valori. A questo punto, per generare il classificatore, è sufficiente lanciare la prima volta \emph{Vision} indicando come parametro \verb|-L <filename.dts>|.
+
+%TODO filtraggio etc?
+
+\begin{nota}
+È necessario prestare particolare attenzione nel training del classificatore, in quanto è una fase critica per il corretto funzionamento del gioco e il corretto riconoscimento degli oggetti. %% TODO TODO STA ROBA E' DA SISTEMARE!!!
+\end{nota}
+
+\section{RoboTower\_Game: la logica di gioco}
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{images/rtgame}
+\caption{Schermata principale dell'interfaccia di controllo del gioco}
+\end{figure}
+
+\emph{RoboTower\_Game} gestisce la logica ad ``alto livello'' del gioco e la comunicazione con l'utente tramite un'apposita interfaccia grafica, realizzata con le librerie Qt \cite{qtweb}. Si occupa di avviare e arrestare le partite, gestire lo stato del gioco, contare i punti, e tenere alcune semplici statistiche. Il nodo interagisce con gli altri processi:
+
+\begin{itemize}
+\item avviando e fermando il comportamento di basso livello del robot, a seconda dello stato corrente del gioco (mediante messaggi sull'argomento \verb|isaac_enable|)
+\item ricevendo da \verb|Echoes| gli ID dei tag RFID letti e le informazioni riguardanti eventuali abbattimenti di torri o fabbriche
+\item pubblicando messaggi relativi alle azioni speciali che devono essere eseguite, come spiegato nel seguito (argomento \verb|rfid_actions|), e invocando i servizi relativi all'accensione e allo spegnimento dei led relativi al punteggio
+\end{itemize}
+
+La maggior parte delle impostazioni di RoboTower\_Game possono essere configurate modificando sul file \verb|robotower.xml|, che si trova nella directory \verb|RoboTower_Game|. Un esempio di file di configurazione corretto è riportato in figura \ref{fig:configfile}\footnote{per semplicità sono stati omessi alcuni tag RFID e le relative azioni}. Il file di configurazione permette di specificare:
+\begin{itemize}
+\item I tempi del gioco (tag \lstinline|<time>|): la durata massima di un round del gioco (\lstinline|timetolive|), il tempo trascorso dall'inizio della partita (pressione del pulsante ``start'') e l'inizio del movimento del robot (\lstinline|setuptime|)
+\item I parametri con cui viene calcolato il punteggio (tag \lstinline|<points>|): durante la partita, ogni secondo viene aggiunto un certo numero di punti per ogni torre e fabbrica che non sono stati ancora distrutti, definiti dagli attributi \lstinline|tower| e \lstinline|factory|
+\item I parametri relativi a torre e fabbriche (tag \lstinline|<goals>|): in particolare, il numero di fabbriche (\lstinline|factories|) e l'id dell'obiettivo che dev'essere considerato come torre (\lstinline|towerid|)
+\end{itemize}
+
+\begin{figure}
+{
+\lstset{
+  language=XML,
+  morekeywords={encoding, robotower, config, time, points, goal, rfid, action, tag}}
+\begin{lstlisting}
+<robotower>
+   <config>
+      <time timetolive="300" setuptime="30" />
+      <points tower="100" factory="30" />
+      <goals towerid="4" factories="3" />
+   </config>
+
+   <rfid>
+      <action name="lock_all">
+         <tag id="4400F56CD1" num="1" />
+         <tag id="4400F59195" num="2" />
+         <tag id="4400F58B6D" num="3" />
+      </action>
+      
+      <action name="disable_vision">
+         <tag id="4400BDB1D9" num="4" />
+         <tag id="4400BDC253" num="5" />
+         <tag id="4B00DA3279" num="6" />
+      </action>
+   </rfid>
+</robotower>
+\end{lstlisting}
+}
+\caption{Il file di configurazione}
+\label{fig:configfile}
+\end{figure}
+
+Il nodo si occupa inoltre di gestire i comportamenti ``speciali'' (action) del robot, attivati quando il robot si avvicina ai tag RFID cui sono associate. Per ogni trappola, è necessario specificare all'interno del blocco \lstinline|<action>| relativo all'azione associata, l'id e un numero (univoco) utilizzato per identificarlo nell'interfaccia grafica. Le azioni che possono essere specificate (parametri \lstinline|name|) sono:
+\begin{itemize}
+\item \lstinline|lock_all| blocca per 5 secondi i motori del robot
+\item \lstinline|force_rotate| costringe per 5 secondi il robot a ruotare su se stesso, inibendo i comandi diretti a uno dei due cingoli
+\item \lstinline|disable_vision| disabilita la visione del robot per 5 secondi
+\item \lstinline|go_back| blocca per 5 secondi l'avanzamento del robot, costringendolo a tornare indietro
+\item \lstinline|modify_time| modifica casualmente il tempo rimanente alla fine del round (sia in positivo che in negativo)
+\end{itemize}
+Una volta che viene letto un tag, questo viene disabilitato. I tag possono essere ricaricati, uno alla volta, dopo un periodo di tempo che dipende dal numero di fabbriche residue sul campo di gioco. %TODO RENDERLO CONFIGURABILE
 
 \section{IsAac: il comportamento del robot}
-IsAac si occupa di controllare il comportamento di basso livello del robot durante il gioco. Questo nodo ignora le problematiche relative al conteggio dei punti, all'avvio e alla conclusione della partita, e gestisce semplicemente il comportamento del robot (i set-point per i cingoli e l'accensione dei led presenti sul robot) in base alle regole del gioco e ai dati provenienti dai sensori. 
+\emph{IsAac} si occupa di controllare il comportamento di ``basso livello'' del robot durante il gioco. In base ai dati provenienti dai sensori, gestisce il comportamento del robot (i set-point per i cingoli e l'accensione di alcuni led).
 
- \emph{IsAac} riceve i messaggi pubblicati da Echoes e Vision, e invia comandi a SpyKee (messaggi \verb|Spykee::Motion| sull'argomento \verb|spykee_motion|) riguardanti il controllo dei cingoli. Inoltre invoca il servizio \verb|led_data| esposto da Echoes per il controllo dei led posti sul robot. Inoltre comunica con \verb|RoboTower_Game| per quanto concerne l'avvio e l'arresto del movimento del robot e la riattivazione dei tag RFID (che invece vengono disattivati da IsAac quando vengono rilevati).
+Il nodo riceve i messaggi pubblicati da \emph{Echoes} e \emph{Vision}, e invia comandi a \emph{SpyKee} (messaggi \verb|Spykee::Motion| sull'argomento \verb|spykee_motion|) riguardanti il controllo dei cingoli. Inoltre invoca il servizio \verb|led_data| esposto da Echoes per il controllo dei led gialli e del led verde posti sul robot. I led gialli lampeggiano quando \emph{IsAac} è attivo, sono spenti quando non è attivo, e sono accesi fissi quando il robot è bloccato in una trappola. Il led verde lampeggia quando viene rilevata una torre o una fabbrica, altrimenti è spento.
 
-%TODO espandere?
-I comportamenti che sono stati implementati mediante regole fuzzy riguardano:
+Il nodo riceve da \emph{RoboTower\_Game} i comandi di attivazione e disattivazione, e le informazioni riguardanti il blocco del robot in una trappola associata ad un'azione che prevede la modifica dei comandi provenienti dai sensori oppure diretti agli attuatori (le altre azioni sono implementate direttamente in \emph{RoboTower\_Game}.
+
+Per l'implementazione di questo nodo, è stata sfruttata la libreria Mr. Brian, sviluppata dal Politecnico di Milano all'interno di MRT \cite{mrt}. Questa libreria consente di definire il comportamento da applicare al robot come un insieme di regole scritte in logica fuzzy, utilizzando anche predicati che risultano dalla fuzzyficazione degli ingressi. La configurazione di Brian è basata su un insieme di file di testo: in questo modo è possibile modificare totalmente i comportamenti senza bisogno di ricompilare il codice sorgente. I file di configurazione, presenti nella cartella \verb|IsAac/config|, sono:
 \begin{itemize}
- \item Cercare la torre o le fabbriche (casualmente)
- \item Raggiungere la torre o la fabbrica (una volta che è stata trovata)
- \item Evitare gli ostacoli
- \item Distruggere la torre (o una fabbrica)
+\item \verb|behaviour.txt| contiene l'elenco, suddiviso per livelli, dei comportamenti (regole) definiti, ognuno dei quali è contenuto in un file \verb|.rul|
+\item \verb|ctof.txt| associa ad ogni dato in ingresso (crisp) una membership function, che verrà utilizzata per la fase di fuzzyficazione. Le membership function sono definite nel file \verb|shape_ctof.txt|.
+\item \verb|s_ftoc.txt| Definisce i valori in uscita e li associa alle funzioni definite nel file \verb|s_shape.txt|
+\item \verb|Predicate.ini| Definisce i predicati fuzzy sulla base delle variabili fuzzy e/o di altri predicati
+\item \verb|Cando.ini| Definisce le condizioni di attivazione per un determinato comportamento (le condizioni necessarie per cui eseguire quel comportamento sia sensato)
+\item \verb|want.txt| Definisce le condizioni per cui è opportuno attivare un determinato comportamento
+\end{itemize}
+All'interno del manuale di MRT \cite{mrtmanual} è presente la descrizione completa del funzionamento di Mr. Brian e della sintassi dei file di configurazione.
+
+I comportamenti che sono stati implementati riguardano:
+\begin{itemize}
+ \item Cercare casualmente la torre o le fabbriche (Search.rul)
+ \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (GoToTower.rul e GoToFactory.rul)
+ \item Evitare gli ostacoli (AvoidObstacle.rul, KeepDistance.rul, GoBack.rul)
+ \item Distruggere la torre o una fabbrica (Destroy.rul)
 \end{itemize}
 
 %TODO dettagliare meglio le regole o il loro funzionamento, spiegare la suddivisione in livelli???
-
-In aggiunta a quanto gestito mediante le regole fuzzy, il nodo si occupa di gestire i comportamenti ``speciali'' del robot, che vengono attivati quando il robot si avvicina ai tag RFID. L'associazione tra i comportamenti e gli identificatori dei corrispondenti tag RFID è definita in un apposito file di configurazione (\verb|rfidconfig.txt|). I comportamenti disponibili, che consistono nella variazione di alcuni dati provenienti dai sensori o diretti agli attuatori per per una durata predefinita, sono:
-\begin{itemize}
- \item blocco totale del robot (\verb|lock_all|)
- \item blocco di uno dei due cingoli (\verb|force_rotate_left| e \verb|force_rotate_right|)
- \item blocco della visione (\verb|disable_vision|)
-\end{itemize}
-
-%TODO interfaccia grafica? altro?
-
-\section{RoboTower\_Game: la logica di gioco}
-Il nodo \emph{RoboTower\_Game} gestisce sia la comunicazione con l'utente mediante un'apposita interfaccia grafica, che la logica ad alto livello del gioco (avvio e arresto delle partite, conteggio dei punti, ...). Interagisce con gli altri modi
-\begin{itemize}
-\item avviando e fermando IsAac
-\item comunicando a IsAac la riabilitazione di eventuali trappole (tag RFID)
-\item ricevendo da Echoes le informazioni riguardanti le torri e le fabbriche abbattute
-\end{itemize}
-
-%TODO espandere? screenshot
-%TODO bisogna specificare come viene calcolato il punteggio ;)
-%TODO segnare funzionamento dei led...
-
-%TODO mettere settaggi in un file anziché come costanti nel codice...
-
-%TODO riconoscimento giocatore x evitare che si metta davanti alla torre...

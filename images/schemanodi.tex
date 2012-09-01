@@ -1,50 +1,50 @@
 \resizebox{\linewidth}{!}{%
-\begin{tikzpicture}[node distance=1cm, auto]
+\begin{tikzpicture}
+
 \tikzset{
-   mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, thick, inner sep=1em, minimum size=3em, text centered},
-   mynode2/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, dashed, inner sep=1em, minimum size=1em, text centered},
+   mynode/.style={rectangle,rounded corners,draw=black, top color=lightgray, bottom color=white!50, inner sep = 0.8em, thick, text centered},
+   mynode2/.style={rectangle,rounded corners,draw=gray, top color=white, bottom color=white!50, inner sep = 0.8em, text centered},
 }  
 \node[mynode] (spykee) {\textbf{SpyKee}}; 
-\node[mynode, below=4cm of spykee] (echoes) {\textbf{Echoes}}; 
-\node[mynode, right=5cm of spykee] (vision) {\textbf{Vision}}; 
-\node[mynode, below right=3cm of vision] (isaac) {\textbf{IsAac}}; 
-\node[mynode2, below=1cm of isaac] (brian) {\emph{Mr. BRIAN}}; 
-\node[mynode2, below left= 2cm of spykee] (robot) {\emph{Robot}}; 
-\node[mynode2, above=1cm of vision] (opencv) {\emph{OpenCV + Blob Growing Algorithm}}; 
- 
-\draw[->, >=latex', shorten >=2pt, shorten <=2pt, bend left=10, thick] 
-     (spykee.east) to node[auto, swap] {\ttfamily{spykee\_camera}}(vision.west); 
+\node[mynode, below=4 of spykee] (echoes) {\textbf{Echoes}}; 
+\node[mynode, above right=3.7 of spykee] (vision) {\textbf{Vision}}; 
+\node[mynode, right=7 of spykee] (isaac) {\textbf{IsAac}}; 
+\node[mynode, below=4 of isaac] (robotowergame) {\textbf{RoboTower\_Game}};
+\node[mynode2, right=0.5 of isaac] (brian) {\emph{Mr. BRIAN}}; 
+\node[mynode2, below left= 2 of spykee] (robot) {\emph{Robot}}; 
+\node[mynode2, left=1 of vision] (opencv) {\emph{OpenCV + Blob Growing Algorithm}}; 
+\node[mynode2, below=1 of robotowergame] (qt) {\emph{Qt4}};
 
-\draw[->, >=latex', shorten >=2pt, shorten <=2pt, bend left=10, thick] 
-     (isaac.west) to node[auto, swap] {\ttfamily{spykee\_motion}}(spykee.south); 
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|spykee camera}}}] (spykee) to [bend left=10]  (vision);
 
-\draw[->, >=latex', shorten >=2pt, shorten <=2pt, bend right=20, thick] 
-     (echoes.east) to node[auto,swap] {\ttfamily{\begin{tabular}{c}
-	 sonar\_data \\
-     rfid\_data \\
-     towers\_data
-  \end{tabular}
-}}(isaac.west); 
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|vision results}}}] (vision) to [bend left=10]  (isaac);
      
-\draw[->, >=latex', shorten >=2pt, shorten <=2pt, bend right=10, thick, dashed] 
-     (isaac.west) to node[auto, swap] {{\ttfamily{led\_data}} (servizio)}(echoes.east); 
+\draw [->,thick,dashed,  shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|Wi-Fi}}}] (robot.north) to [bend left=7]  (spykee.west);
 
-\draw[->, >=latex', shorten >=2pt, shorten <=2pt, bend left=30, thick] 
-     (vision.east) to node[auto, swap] {{\ttfamily{vision\_results}}}(isaac.north); 
+\draw [->,thick,dashed,  shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|Zigbee}}}] (robot.south) to [bend right=7]  (echoes.west);
+     
+\draw[->, >=triangle 45, shorten <=1pt, thick] 
+     (isaac) to node[auto] {\ttfamily{spykee\_motion}}(spykee); 
 
-\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend left=0, thin, dashed] 
-     (isaac.south) to node[auto, swap] {}(brian.north); 
+\draw[->, >=triangle 45, shorten <=1pt, thick] 
+     (robotowergame) to node[auto, swap] {\ttfamily{enable, actions}}(isaac); 
 
-\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend left=0, thin, dashed] 
-     (vision.north) to node[auto, swap] {}(opencv.south); 
+\draw [<-,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led data (serv.)}}}] (echoes) to [bend left=7]  (isaac);
 
-\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend left=7, thin, dashed] 
-     (robot.north) to node[auto, swap] {Wi-fi}(spykee.west); 
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|sonar data}}}] (echoes) to [bend right=7]  (isaac);
 
-\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=7, thin, dashed] 
-     (robot.south) to node[auto, swap] {Zigbee}(echoes.west); 
+\draw [<-,thick,  shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|rfid data, tower data}}}] (echoes) to [bend right=7]  (robotowergame);
 
-% The swap command corrects the placement of the text.
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led data (serv.)}}}] (echoes) to [bend left=7]  (robotowergame);
+
+\draw[-, thin] 
+     (vision.west) to node[auto, swap] {}(opencv.east); 
+     
+\draw[-, thin] 
+     (isaac.east) to node[auto, swap] {}(brian.west); 
+     
+\draw[-, thin] 
+     (robotowergame.south) to node[auto, swap] {}(qt.north); 
 
 \end{tikzpicture} 
 } 
