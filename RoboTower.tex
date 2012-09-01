@@ -14,9 +14,11 @@
 \title{RoboTower}
 \author{\firstauthor, \secondauthor}
 
+\usepackage[margin=3cm]{geometry} % margins set here are for the TITLE page...
+
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
-\usepackage{fancyhdr}
+%\usepackage{fancyhdr}
 \usepackage{tikz}
 \usetikzlibrary{arrows,positioning, decorations.text}
 
@@ -36,23 +38,27 @@
 \newtheoremstyle{note} % name
 	{\topsep} 	% Space above
 	{\topsep} 	% Space below
-	{\small\sffamily}		% Body font
+	{\small}		% Body font
 	{}		% Indent amount
-	{\bfseries}% Theorem head font
+	{\small\bfseries}% Theorem head font
 	{:}		% Punctuation after theorem head
 	{.5em}	% Space after theorem head
 	{}		% Theorem head spec (can be left empty, meaning ‘normal’)
 \theoremstyle{note}
 \newtheorem*{nota}{Nota}	
-
+%
 \usepackage{settings/frontesp}
 
-\include{settings/theme}
+\usepackage{fancyhdr}
+%% Cambia il carattere delle didascalie delle figure %%
+\usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
+
 
 \begin{document}
 
-
 \titlep
+\newgeometry{top=4cm,bottom=4cm,right=4cm,left=4cm}
+\include{settings/theme}
 
 % \pagenumbering{roman}
 \tableofcontents
@@ -60,7 +66,7 @@
 
 % \pagenumbering{arabic}
 % \setcounter{1}
-\pagestyle{fancy}
+%\pagestyle{fancy}
 
 
 % --------------------------------------------------------------------------------------------------------------------
