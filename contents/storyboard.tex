@@ -20,7 +20,7 @@ RoboTower può essere facilmente esteso a più giocatori sia in senso cooperativ
 \section{Requisiti di base}
 
 \subsection*{Ambiente di gioco}
-Il gioco può pertanto svolgersi sia in un ambiente chiuso, sia all'esterno purché sufficientemente grande e con una superficie tale da permettere il posizionamento degli ostacoli e il movimento del robot. In particolare sono scosigliati oggetti come sedie, gambe dei tavoli, o altri tipi di ostacoli bassi che il robot non può rilevare coi sonar/altri sensori. E' preferibile che il campo sia delimitato da ostacoli verticali e lisci, in modo che il robot possa rilevarli correttamente col sonar enon rischi di sbatterci contro.
+Il gioco può svolgersi sia in un ambiente chiuso che all'esterno, purché l'ambiente sufficientemente grande, in modo da permettere il posizionamento degli ostacoli e il movimento del robot. In particolare sono scosigliati oggetti come sedie, gambe dei tavoli, o altri tipi di ostacoli bassi che il robot non può rilevare coi sonar ed eventuali altri sensori. E' preferibile che il campo sia delimitato da ostacoli verticali e lisci, in modo che il robot possa rilevarli correttamente, senza sbatterci contro.
 
 \subsection*{Robot}
 Il robot deve essere dotato di una telecamera per riconoscere gli ostacoli ``fisici'', la torre e le trappole (costituite da marker a cui sono collegati contenuti concettuali). Sulla velocità non ci sono particolari requisiti, tuttavia deve essere sufficiente a rendere – in una certa misura – dinamico il gioco.
@@ -60,7 +60,7 @@ Tutte le fabbriche vengono posizionate nel campo di gioco all'inizio della parti
 Ogni round ha una durata costante (circa 5 minuti). In caso di problemi al robot (ad esempio se il robot cade a causa di ostacoli non idonei sul campo di gioco), può essere fermato il tempo. Inoltre, la durata del round può essere eventualmente modificata dalle trappole.
 
 \section{Regole del gioco} 
-Il gioco è strutturato in vari \emph{round}, ognuno dei quali può essere vinto dal robot oppure dal giocatore. Al termine della partita viene dichiarato vincitore chi, tra il robot e il giocatore, vince il maggior numero di round. Inoltre il giocatore può misurare le sue prestazioni di gioco acquisendo crediti di gioco.
+Il gioco è strutturato in vari \emph{round}, ognuno dei quali può essere vinto dal robot oppure dal giocatore. Al termine della partita viene dichiarato vincitore chi, tra il robot e il giocatore, vince il maggior numero di round. Inoltre il giocatore può misurare le sue prestazioni, e confrontarle con quelle di altri giocatori, acquisendo crediti di gioco.
 
 All'inizio del gioco, il robot è posizionato nella propria base. Gli ostacoli sono posizionati in un luogo (il ``deposito ostacoli'') posto, a discrezione del giocatore, a una certa distanza dall'area in cui verrà posizionata la torre, per rendere il gioco più (o meno) dinamico.
 
@@ -71,7 +71,7 @@ Il giocatore, prima dell'inizio di ogni round, posiziona la torre, poi dà avvio
 A seguito dell'avvio del gioco, dopo 30 secondi, il robot comincia a dirigersi verso la torre, cercando di evitare gli ostacoli.
 	
 	\subsection*{Svolgimento}
-	Durante lo svolgimento del gioco, il giocatore può posizionare le trappole (che consistono in delle carte di plastica), cercando di evitare l'avanzata del robot. Il robot cerca di dirigersi verso la torre e abbatterla, evitando gli ostacoli fisici e rispettando gli ordini di quelli concettuali.
+	Durante lo svolgimento del gioco, il giocatore può posizionare le trappole (che possono essere costituite, ad esempio, da carte di plastica), cercando di evitare l'avanzata del robot. Il robot cerca di dirigersi verso la torre e abbatterla, evitando gli ostacoli fisici e rispettando gli ordini di quelli concettuali.
 
 Il robot è dotato di una certa quantità di \emph{energia}. L'energia residua del robot è rappresentata dal tempo residuo del round, terminato il quale il robot si disattiva e non è più in grado di continuare, consegnando la vittoria al giocatore.
 
@@ -80,7 +80,7 @@ All'inizio del round il giocatore avrà a disposizione l'intero mazzo di carte t
 	\subsection*{Conclusione} 
 Il round termina quando il robot esaurisce tutta la sua energia oppure riesce ad abbattere la torre. In particolare, il giocatore vince il round quando il robot esaurisce tutta la sua energia, ossia finisce il tempo senza che venga abbattuta la torre, mentre il robot vince il round se riesce ad abbattere la torre prima del termine del tempo.
 Al termine di ogni round gli ostacoli vengono riportati nel deposito ostacoli.
-Inoltre i \emph{crediti di gioco} guadagnati, che misurano le sue prestazioni del giocatore nel difendere il più a lungo possibile sia le torri che le fabbriche, andranno a sommarsi allo score del giocatore a fine partita, sia che il giocatore vinca la partita, sia che sia stato sconfitto dal robot.
+I \emph{crediti di gioco} guadagnati, che misurano le prestazioni del giocatore nel difendere torri e fabbriche il pià a lungo possibile, andranno a sommarsi all punteggio del giocatore, sia che il giocatore vinca la partita, sia che sia stato sconfitto dal robot.
 A questo punto, il giocatore è pronto per iniziare un altro round.
 
 \begin{nota}
@@ -94,15 +94,15 @@ In questo paragrafo viene riassunto lo schema generale di un round del gioco, sp
 	\item Il giocatore sceglie gli ostacoli fisici da usare e da avvio al gioco
 	\item Il giocatore piazza gli ostacoli fisici fino a che un segnale lo avvisa che la partita comincia.
 	\item Il robot si mette in movimento verso la torre nel tentativo di abbatterla.
-	\item Il giocatore può posizionare le trappole dove e quando vuole. Tuttavia la trappola avrà effetto solo se attiva.
+	\item Il giocatore può posizionare le trappole dove e quando vuole. La trappola avrà effetto solo se attiva.
 	\item Il robot che cada in una trappola, subirà gli effetti imposti da essa, che possono essere:
 		\begin{enumerate}
 		\item Perdere energia vitale (si accorcia il suo ``time to live'')
 		\item Aumentare la sua energia vitale (si allunga il suo ``time to live'')
 		\item Venire immobilizzato per alcuni secondi
 		\item Non potere vedere nulla nel suo campo visivo per alcuni secondi
-		\item ubire il blocco di un cingolo per alcuni secondi
-		\item Essere obbligato a compiere una retromarcia obbligata
+		\item Subire il blocco di un cingolo per alcuni secondi
+		\item Compiere una retromarcia obbligata
 		\end{enumerate}
 	\item Il robot può, se lo ritiene opportuno, distruggere le fabbriche, e diminuire la produzione di crediti del giocatore. Inoltre un numero minore di fabbriche comporta una  velocità di riattivazione delle carte minore.
 	\item Se il robot distrugge la torre, ha vinto il round.
