@@ -9,10 +9,12 @@ Il software realizzato è stato sviluppato per un sistema Linux. Le istruzioni s
 
 \begin{nota} I comandi per installare ROS su Ubuntu, riferiti all'ultima versione di ROS (\verb|fuerte|) e del sistema operativo (\verb|precise|) disponibile al momento della scrittura della documentazione, sono:
 \begin{verbatim}
-$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" 
-          > /etc/apt/sources.list.d/ros-latest.list'
+$ sudo sh -c `
+    echo "deb http://packages.ros.org/ros/ubuntu precise main" 
+    > /etc/apt/sources.list.d/ros-latest.list `
 $ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-$ sudo apt-get update && sudo apt-get install ros-fuerte-desktop
+$ sudo apt-get update
+$ sudo apt-get install ros-fuerte-desktop
 \end{verbatim}
 Una volta installati i pacchetti, è necessario fare in modo che le variabili di ambiente di ROS vengano impostate all'avvio:
 \begin{verbatim}
