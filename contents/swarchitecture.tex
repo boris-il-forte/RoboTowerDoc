@@ -43,7 +43,7 @@ dove $\alpha = 0.3$, valore sufficientemente basso da ridurre il rumore ad alta 
 
 \emph{Vision} si occupa di analizzare le immagini provenienti dalla telecamera di Spykee, per rilevare la presenza di una torre o di una fabbrica. 
 
-Il nodo riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results|. Questo messaggio contiene i dati riguardanti gli oggetti trovati: la posizione rispetto al centro dell'immagine, una stima della distanza in centimetri, e l'altezza e la larghezza del blob in pixel. %TODO TODO sicuri che sono centimetri e pixel?
+Il nodo riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results|. Questo messaggio contiene i dati riguardanti gli oggetti trovati: la posizione rispetto al centro dell'immagine, una stima della distanza in centimetri, e l'altezza e la larghezza del blob in pixel.
 
 Il cuore del nodo è un algoritmo, già utilizzato nel progetto \cite{docmandelli}, che si occupa di identificare all'interno dell'immagine dei blob sufficientemente uniformi e di colore ``simile'' a quello degli oggetti che si stanno cercando. L'analisi viene effettuata basandosi su un algoritmo di tipo KNN, che necessita di una prima fase di addestramento. Al termine di questa fase, viene generato un classificatore (contenuto in un file \verb|.kcc|), tramite il quale l'algoritmo è in grado di associare ad ogni pixel dell'immagine una classe di identificazione. Le classi riguardano i pixel di colore simile a quello di una torre (classe \verb|R|), oppure di una fabbrica (classe \verb|G|). Una volta effettuata la classificazione dei pixel dell'immagine, l'algoritmo per rileva all'interno dell'immagine i blob di interesse, e quindi stabilisce se è presente una torre o una fabbrica.
 
@@ -81,6 +81,7 @@ Il classificatore viene generato a partire da un file che contiene semplicemente
 		<time timetolive="300" setuptime="30" />
 		<points tower="100" factory="30" />
 		<goals towerid="4" factories="3" />
+		<recharge tower="3" factory="2"/>
 	</config>
 
 	<rfid>
@@ -133,7 +134,7 @@ Per l'implementazione di questo nodo, è stata sfruttata la libreria Mr. Brian, 
 \item \verb|s_ftoc.txt| definisce i valori in uscita da Brian, associandoli agli insiemi fuzzy da utilizzare per la defuzzyficazione. Gli insiemi sono definiti nel file \verb|s_shape.txt|
 \item \verb|Predicate.ini| definisce i predicati fuzzy sulla base di variabili fuzzy e/o di altri predicati
 \item \verb|Cando.ini| definisce le condizioni di attivazione per un determinato comportamento (le condizioni necessarie per cui eseguire quel comportamento sia sensato)
-\item \verb|want.txt| definisce le condizioni per cui è opportuno attivare un determinato comportamento
+\item \verb|Want.ini| definisce le condizioni per cui è opportuno attivare un determinato comportamento
 \end{itemize}
 La suddivisione in livelli nel file \verb|behaviour.txt| permette di utilizzare come ingresso dati in uscita dai livelli precedenti, ed eventualmente cancellare anche le uscite impostate dai livelli precedenti. Nelle regole, infatti, è possibile utilizzare anche i predicati che sono stati definiti nel file \verb|PredicateActions.ini|. In questo file è possibile far riferimento ai dati in uscita dai livelli precedenti a quello corrente, utilizzando etichette della forma
 \begin{center}\verb|Proposed<nome del dato in uscita>|\end{center}

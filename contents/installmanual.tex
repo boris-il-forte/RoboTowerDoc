@@ -110,7 +110,7 @@ $ make
 \end{verbatim}
 Se la compilazione ha successo, viene prodotto il file \verb|ch.elf| nella sottocartella \verb|build|.
 
-\paragraph{Installazione} Per caricare il firmware sulla scheda, è necessario prima di tutto collegare la scheda al computer e avviare OpenOCD con il comando
+\paragraph{Installazione} Per caricare il firmware sulla scheda, è necessario prima di tutto spegnere l'alimentazione della scheda\footnote{Attenzione! Collegare l'alimentazione della scheda quando è collegata al computer tramite USB potrebbe causare seri danni alla stessa e renderla inutilizzabile} (tramite l'apposito interruttore) e collegare la scheda al computer tramite USB. Si deve quindi avviare OpenOCD con il comando
 \begin{verbatim}
 $ openocd -f board/stm32f4discovery.cfg
 \end{verbatim}
