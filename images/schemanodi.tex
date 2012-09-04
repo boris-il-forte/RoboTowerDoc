@@ -27,13 +27,13 @@
 
 \draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|enable, actions}}}] (robotowergame) to (isaac);
 
-\draw [<-,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led data (serv.)}}}] (echoes) to [bend left=7]  (isaac);
+\draw [<-,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led (servizi)}}}] (echoes) to [bend left=7]  (isaac);
 
 \draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|sonar data}}}] (echoes) to [bend right=7]  (isaac);
 
 \draw [<-,thick,  shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=-2.5ex,text along path,text align=center,text={|\sffamily|rfid data, tower data}}}] (echoes) to [bend right=7]  (robotowergame);
 
-\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led data (serv.)}}}] (echoes) to [bend left=7]  (robotowergame);
+\draw [->,thick, shorten >=1pt, shorten <=1pt,postaction={decorate,decoration={raise=1ex,text along path,text align=center,text={|\sffamily|led (servizi)}}}] (echoes) to [bend left=7]  (robotowergame);
 
 \draw[-, thin] 
      (vision.west) to node[auto, swap] {}(opencv.east); 

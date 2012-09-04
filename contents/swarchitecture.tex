@@ -33,7 +33,7 @@ Il nodo riceve i dati dalla porta seriale\footnote{di default viene utilizzato i
 	\item i messaggi di tipo \verb|Echoes::Rfid| sull'argomento \verb|rfid_data| contengono semplicemente una stringa identificativa del tag RFID rilevato
 	\item i messaggi di tipo \verb|Echoes::Tower| sull'argomento \verb|towers_data| contengono un intero che corrisponde all'id della torre (o della fabbrica) abbattuta
 \end{itemize}
-Inoltre, il nodo espone un servizio di tipo \verb|Echoes::Led|, \verb|led_data|, che permette di controllare l'accensione dei led, e un altro servizio che consente di spegnere tutti i led (\verb|resetLed_data|). I led possono essere impostati nello stato di acceso, spento o lampeggiante. In particolare, per i led gialli e i led rossi, lo stato lampeggiante viene definito a livello dell'intero gruppo di led.
+Inoltre, il nodo espone alcuni servizi che permettono di comandare i led presenti sul robot (\verb|green_led|, \verb|yellow_led| e \verb|red_led|), e un ulteriore servizio che consente di spegnere tutti i led (\verb|reset_led|). I led possono essere impostati nello stato di acceso, spento o lampeggiante. In particolare, per i led gialli e i led rossi, lo stato lampeggiante viene definito a livello dell'intero gruppo di led.
 
 A causa dell'alto rumore presente nei valori provenienti dai sonar, il valore $x_k$ che viene pubblicato sul topic \verb|sonar_data| è filtrato attraverso un filtro a media mobile esponenziale. Questo significa che il dato pubblicato all'arrivo del $k$-esimo campione $x_{cur}$ registrato dal sonar è dato da
   \[ x_k = \alpha x_{cur} + (1 - \alpha) x_{k-1} \]
