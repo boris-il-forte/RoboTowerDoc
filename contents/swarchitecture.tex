@@ -66,7 +66,7 @@ Il classificatore viene generato a partire da un file che contiene semplicemente
 \begin{itemize}
 \item avviando e fermando il comportamento di basso livello del robot, a seconda dello stato corrente del gioco (pubblicando messaggi di tipo \verb|std_msgs::Bool| sull'argomento \verb|isaac_enable|)
 \item ricevendo da \verb|Echoes| gli ID dei tag RFID letti e le informazioni riguardanti eventuali abbattimenti di torri o fabbriche
-\item pubblicando messaggi di tipo \verb|std_msgs::String| sull'argomento \verb|rfid_actions| relativi alle azioni speciali che devono essere eseguite dal robot, come spiegato nel seguito
+\item pubblicando messaggi di tipo \verb|std_msgs::String| relativi alle azioni speciali che devono essere eseguite dal robot (topic \verb|rfid_actions|), come spiegato nel seguito
 \item invocando i servizi relativi all'accensione e allo spegnimento dei led relativi al punteggio
 \end{itemize}
 
@@ -109,6 +109,9 @@ La maggior parte delle impostazioni di RoboTower\_Game possono essere configurat
 \item I tempi del gioco (tag \lstinline|<time>|): l'attributo \lstinline|timetolive| permette di modificare la durata massima di un round del gioco, mentre l'attributo \lstinline|setuptime| controlla il tempo che deve trascorrere dall'inizio della partita (pressione del pulsante ``start'') e l'inizio del movimento del robot
 \item I parametri con cui viene calcolato il punteggio (tag \lstinline|<points>|): durante la partita, ogni secondo viene aggiunto un certo numero di punti per ogni torre e fabbrica che non sono stati ancora distrutti, definiti dagli attributi \lstinline|tower| e \lstinline|factory|
 \item I parametri relativi a torre e fabbriche (tag \lstinline|<goals>|): in particolare, il numero di fabbriche (\lstinline|factories|) e l'id dell'obiettivo che dev'essere considerato come torre (\lstinline|towerid|)
+\item I parametri relativi al tempo di ricarica delle trappole (tag \lstinline|<recharge>|). Le trappole vengono completamente ricaricate dopo
+\[\frac{100}{\texttt{tower} + \texttt{factories} \cdot \textrm{fabbriche attive}}\]
+secondi da quando vengono attivate.
 \end{itemize}
 Il nodo si occupa inoltre di gestire i comportamenti ``speciali'' del robot, collegati alle trappole (tag RFID). Per ogni trappola, è necessario specificare, all'interno del blocco \lstinline|<action>| relativo all'azione associata, l'id e un numero (univoco) che viene utilizzato per identificarlo nell'interfaccia grafica. Le azioni che possono essere specificate (parametri \lstinline|name|) sono:
 \begin{itemize}
@@ -118,7 +121,7 @@ Il nodo si occupa inoltre di gestire i comportamenti ``speciali'' del robot, col
 \item \lstinline|go_back|: blocca per 5 secondi l'avanzamento del robot, costringendolo a tornare indietro
 \item \lstinline|modify_time|: modifica casualmente il tempo rimanente alla fine del round (sia in positivo che in negativo)
 \end{itemize}
-Una volta che viene letto un tag, questo viene disabilitato. I tag possono essere ricaricati, uno alla volta, dopo un periodo di tempo che dipende dal numero di fabbriche residue sul campo di gioco.
+Una volta che viene letto un tag, questo viene disabilitato. I tag vengono ricaricati, uno alla volta, dopo un periodo di tempo che dipende dai parametri di configurazione impostati.
 
 \section{IsAac: il comportamento del robot}
 \emph{IsAac} si occupa di controllare il comportamento di ``basso livello'' del robot durante il gioco. In base ai dati provenienti dai sensori, gestisce il comportamento del robot, impostando i set-point per i cingoli e controllando l'accensione di alcuni led.
@@ -136,14 +139,21 @@ Per l'implementazione di questo nodo, è stata sfruttata la libreria Mr. Brian, 
 \item \verb|Cando.ini| definisce le condizioni di attivazione per un determinato comportamento (le condizioni necessarie per cui eseguire quel comportamento sia sensato)
 \item \verb|Want.ini| definisce le condizioni per cui è opportuno attivare un determinato comportamento
 \end{itemize}
-La suddivisione in livelli nel file \verb|behaviour.txt| permette di utilizzare come ingresso dati in uscita dai livelli precedenti, ed eventualmente cancellare anche le uscite impostate dai livelli precedenti. Nelle regole, infatti, è possibile utilizzare anche i predicati che sono stati definiti nel file \verb|PredicateActions.ini|. In questo file è possibile far riferimento ai dati in uscita dai livelli precedenti a quello corrente, utilizzando etichette della forma
+La suddivisione in livelli nel file \verb|behaviour.txt| permette di utilizzare come ingresso dati in uscita dai livelli precedenti, ed eventualmente cancellare anche le uscite impostate dai livelli precedenti. Nelle regole, infatti, è possibile utilizzare anche i predicati, definiti nel file \verb|PredicateActions.ini|, in cui è possibile far riferimento ai dati in uscita dai livelli precedenti a quello corrente utilizzando etichette della forma
 \begin{center}\verb|Proposed<nome del dato in uscita>|\end{center}
 dopo averle associate ad opportuni insiemi fuzzy nel file \verb|ctof.txt|. La suddivisione in livelli permette di rendere maggiormente modulari le regole fuzzy. All'interno del manuale di MRT \cite{mrtmanual} è presente la descrizione completa del funzionamento di Mr. Brian e della sintassi dei file di configurazione.
 
-I comportamenti che sono stati implementati riguardano:
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.35]{images/schemafuzzy}
+\caption{I comportamenti utilizzati da IsAac}
+\label{fig:schemafuzzy}
+\end{figure}
+
+I comportamenti che sono stati implementati permettono al robot di:
 \begin{itemize}
- \item Cercare casualmente la torre o le fabbriche (Search.rul)
- \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (GoToTower.rul e GoToFactory.rul)
- \item Evitare gli ostacoli (AvoidObstacle.rul, KeepDistance.rul, GoBack.rul)
- \item Distruggere la torre o una fabbrica (Destroy.rul)
+ \item Cercare casualmente la torre o le fabbriche (Search)
+ \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (GoToTower e GoToFactory)
+ \item Evitare gli ostacoli (AvoidObstacle, KeepDistance, GoBack)
+ \item Distruggere la torre o una fabbrica (Destroy)
 \end{itemize}

@@ -73,6 +73,10 @@ $ roslaunch spykee.launch
 \end{verbatim}
 dalla cartella del progetto.
 
+\begin{nota}
+Se il nodo Echoes non riesce ad accedere alla porta seriale, è possibile che i permessi per l'utente corrente non consentano di aprire il dispositivo: per risolvere questo problema è sufficiente aggiungere l'utente corrente al gruppo \verb|dialout| oppure impostare i permessi corretti tramite regole di \verb|udev|.
+\end{nota}
+
 \section{Firmware del microcontrollore}
 
 Il firmware è stato realizzato per la scheda (Evaluation Board) STM32F4 Discovery della ST. Nelle istruzioni che seguono, verrà utilizzato il programmatore integrato sulla scheda (ST-Link v2).
@@ -97,7 +101,7 @@ $ make
 L'ultimo comando serve per installare OpenOCD nelle cartelle di sistema, e dev'essere eseguito con i privilegi di root.
 \end{nota}
 
-\item Scaricare i sorgenti di ChibiOS da \url{http://chibios.org}. Una volta scaricato e decompresso l'archivio, aprire il \verb|Makefile| presente nella cartella FirmwareSpykee e modificare la riga
+\item Scaricare i sorgenti di ChibiOS da \url{http://chibios.org}. Una volta scaricato e decompresso l'archivio, aprire il \verb|Makefile| presente nella cartella \verb|FirmwareSpykee| e modificare la riga
 \begin{verbatim}
 CHIBIOS = /opt/ChibiOS/ChibiOS_2.4.2
 \end{verbatim}
@@ -106,11 +110,11 @@ inserendo il percorso corretto. Il firmware è stato testato con la versione 2.4
 
 \subsection*{Compilazione ed installazione}
 
-\paragraph{Compilazione} Posizionarsi nella cartella FirmwareSpykee e dare il comando
+\paragraph{Compilazione} Posizionarsi nella cartella \verb|FirmwareSpykee| ed eseguire il comando
 \begin{verbatim}
 $ make
 \end{verbatim}
-Se la compilazione ha successo, viene prodotto il file \verb|ch.elf| nella sottocartella \verb|build|.
+Se la compilazione ha successo, viene creato nella sottocartella \verb|build| il file \verb|ch.elf|.
 
 \paragraph{Installazione} Per caricare il firmware sulla scheda, è necessario prima di tutto spegnere l'alimentazione della scheda\footnote{Attenzione! Collegare l'alimentazione della scheda quando è collegata al computer tramite USB potrebbe causare seri danni alla stessa e renderla inutilizzabile} (tramite l'apposito interruttore) e collegare la scheda al computer tramite USB. Si deve quindi avviare OpenOCD con il comando
 \begin{verbatim}
