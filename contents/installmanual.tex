@@ -31,7 +31,7 @@ $ sudo easy_install -U rosinstall vcstools rosdep
 \begin{itemize}
 \item flex e bison, utilizzate da Mr. Brian per generare i parser
 \item OpenCV (libopencv-dev), utilizzate per l'analisi delle immagini
-\item le librerie Qt4\footnote{Probabilmente le librerie Qt sono già installate da ROS come dipendenza} (libqt4-dev), utilizzate per l'interfaccia grafica
+\item le librerie Qt4\footnote{Probabilmente le librerie Qt sono già installate da ROS come dipendenza} (\verb|libqt4-dev|), utilizzate per l'interfaccia grafica, e Qt-Mobility (\verb|qtmobility-dev|), che contiene QtMultimediaKit, utilizzato per la riproduzione dei suoni
 \end{itemize}
 Inoltre, sono necessari i pacchetti di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}, contenuto nello stack \texttt{ias\_perception}} e \verb|opencv2|. Per scaricare questi pacchetti nella home (nella cartella \verb|~/ros|), è necessario innanzitutto inizializzare tale cartella come workspace:
 \begin{verbatim}
