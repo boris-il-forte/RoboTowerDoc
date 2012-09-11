@@ -11,7 +11,7 @@ Un sistema realizzato con ROS è suddiviso in un certo numero di \emph{nodi}, ov
 
 Oltre a funzionare come middleware di comunicazione interprocesso, ROS mette a disposizione alcuni programmi grafici e testuali, e funzioni di libreria che forniscono funzioni utili allo sviluppo di applicazioni robotiche.
 
-Il sistema da noi realizzato risulta quindi composto da vari nodi. Ciascuno di essi è contenuto in un package omonimo all'interno della directory principale del progetto. In figura \ref{fig:schemanodi} è rappresentata l'architettura generale del sistema: in particolare i vari nodi e le dipendenze dalle librerie esterne a ROS. Le frecce rappresentano la comunicazione tra nodi (messaggi scambiati e servizi invocati) e i canali di comunicazione tra il software presente sull'unità di elaborazione e il robot.
+Il sistema da noi realizzato risulta quindi composto da vari nodi. Ciascuno di essi è contenuto in un package omonimo all'interno della directory principale del progetto. In figura \ref{fig:schemanodi} è rappresentata l'architettura generale del sistema: i vari nodi e le dipendenze dalle librerie esterne a ROS. Le frecce rappresentano la comunicazione tra nodi (messaggi scambiati e servizi invocati) e i canali di comunicazione tra il software presente sull'unità di elaborazione e il robot.
 
 \begin{figure}[h]
 \input{images/schemanodi.tex}
@@ -20,7 +20,7 @@ Il sistema da noi realizzato risulta quindi composto da vari nodi. Ciascuno di e
 \end{figure}
 
 \section{SpyKee}
-\emph{SpyKee} si occupa di interfacciare l'unità di elaborazione con le funzioni del robot che comunicano via Wi-Fi: permette di fornire i comandi ai cingoli e di ricevere le immagini catturate dalla telecamera. Questo nodo è frutto dell'adattamento a ROS di una libreria realizzata nei precedenti progetti, e ottenuta analizzando con un software di cattura dei pacchetti di rete la comunicazione tra il robot e il software di controllo per Microsoft Windows fornito dalla Meccano.
+\emph{SpyKee} si occupa di interfacciare l'unità di elaborazione con le funzioni del robot che comunicano via Wi-Fi: permette di fornire i comandi ai cingoli e di ricevere le immagini catturate dalla telecamera. Questo nodo è l'adattamento a ROS di una libreria realizzata nei precedenti progetti, e ottenuta analizzando con un software di cattura dei pacchetti di rete la comunicazione tra il robot e il software di controllo per Microsoft Windows fornito dalla Meccano.
 
 SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini ricevute dalla telecamera compresse in formato JPEG. Inoltre sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli. Tali comandi sono costituiti da due interi compresi tra $-90$ e $90$, che rappresentano la velocità tangenziale e angolare del robot, e vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro.
 
@@ -45,7 +45,7 @@ dove $\alpha = 0.3$, valore sufficientemente basso da ridurre il rumore ad alta 
 
 Il nodo riceve da \emph{SpyKee} i messaggi contenenti le immagini e, analizzata l'immagine, pubblica un messaggio di tipo \verb|Vision::Results| sull'argomento \verb|vision_results|. Questo messaggio contiene i dati riguardanti gli oggetti trovati: la posizione rispetto al centro dell'immagine, una stima della distanza in centimetri, e l'altezza e la larghezza del blob in pixel.
 
-Il cuore del nodo è un algoritmo, già utilizzato nel progetto \cite{docmandelli}, che si occupa di identificare all'interno dell'immagine dei blob sufficientemente uniformi e di colore ``simile'' a quello degli oggetti che si stanno cercando. L'analisi viene effettuata basandosi su un algoritmo di tipo KNN, che necessita di una prima fase di addestramento. Al termine di questa fase, viene generato un classificatore (contenuto in un file \verb|.kcc|), tramite il quale l'algoritmo è in grado di associare ad ogni pixel dell'immagine una classe di identificazione. Le classi riguardano i pixel di colore simile a quello di una torre (classe \verb|R|), oppure di una fabbrica (classe \verb|G|). Una volta effettuata la classificazione dei pixel dell'immagine, l'algoritmo per rileva all'interno dell'immagine i blob di interesse, e quindi stabilisce se è presente una torre o una fabbrica.
+Il cuore del nodo è un algoritmo, già utilizzato nel progetto \cite{docmandelli}, che si occupa di identificare all'interno dell'immagine dei blob sufficientemente uniformi e di colore ``simile'' a quello degli oggetti che si stanno cercando. L'analisi viene effettuata basandosi su un algoritmo di tipo KNN, che necessita di una prima fase di addestramento. Al termine di questa fase, viene generato un classificatore (contenuto in un file \verb|.kcc|), tramite il quale l'algoritmo è in grado di associare ad ogni pixel dell'immagine una classe di identificazione. Le classi riguardano i pixel di colore simile a quello di una torre (classe \verb|R|), oppure di una fabbrica (classe \verb|G|). Una volta effettuata la classificazione dei pixel dell'immagine, l'algoritmo rileva all'interno dell'immagine i blob di interesse, e quindi stabilisce se è presente una torre o una fabbrica.
 
 Il classificatore viene generato a partire da un file che contiene semplicemente un elenco di valori \verb|BGR| di pixel che si considerano del colore cercato. Per generare questo file è possibile utilizzare il nodo \emph{LittleEndian}: questo nodo carica le immagini da file oppure le riceve direttamente da \emph{SpyKee}, e consente di evidenziare nell'immagine le aree che corrispondono agli oggetti cercati. Alla fine, LittleEndian genera un file \verb|.dts| che contiene l'insieme dei valori. Per generare il classificatore, è sufficiente lanciare una volta \emph{Vision} indicando come parametro \verb|-L <filename.dts>|.
 
@@ -81,7 +81,7 @@ Il classificatore viene generato a partire da un file che contiene semplicemente
 		<time timetolive="300" setuptime="30" />
 		<points tower="100" factory="30" />
 		<goals towerid="4" factories="3" />
-		<recharge tower="3" factory="2"/>
+		<recharge basic="3" factory="2"/>
 	</config>
 
 	<rfid>
@@ -110,7 +110,7 @@ La maggior parte delle impostazioni di RoboTower\_Game possono essere configurat
 \item I parametri con cui viene calcolato il punteggio (tag \lstinline|<points>|): durante la partita, ogni secondo viene aggiunto un certo numero di punti per ogni torre e fabbrica che non sono stati ancora distrutti, definiti dagli attributi \lstinline|tower| e \lstinline|factory|
 \item I parametri relativi a torre e fabbriche (tag \lstinline|<goals>|): in particolare, il numero di fabbriche (\lstinline|factories|) e l'id dell'obiettivo che dev'essere considerato come torre (\lstinline|towerid|)
 \item I parametri relativi al tempo di ricarica delle trappole (tag \lstinline|<recharge>|). Le trappole vengono completamente ricaricate dopo
-\[\frac{100}{\texttt{tower} + \texttt{factories} \cdot \textrm{fabbriche attive}}\]
+\[\frac{100}{\texttt{basic} + \texttt{factories} \cdot \textrm{numero fabbriche attive}}\]
 secondi da quando vengono attivate.
 \end{itemize}
 Il nodo si occupa inoltre di gestire i comportamenti ``speciali'' del robot, collegati alle trappole (tag RFID). Per ogni trappola, è necessario specificare, all'interno del blocco \lstinline|<action>| relativo all'azione associata, l'id e un numero (univoco) che viene utilizzato per identificarlo nell'interfaccia grafica. Le azioni che possono essere specificate (parametri \lstinline|name|) sono:
@@ -154,6 +154,6 @@ I comportamenti che sono stati implementati permettono al robot di:
 \begin{itemize}
  \item Cercare casualmente la torre o le fabbriche (Search)
  \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (GoToTower e GoToFactory)
- \item Evitare gli ostacoli (AvoidObstacle, KeepDistance, GoBack)
+ \item Evitare gli ostacoli: AvoidObstacle serve per evitare ostacoli posti frontalmente, KeepDistance evita che il robot colpisca ostacoli al lato, mentre GoBack è una regola utilizzata in situazioni di emergenza, dove avanzare frontalmente non porterebbe a uscire da una situazione di blocco
  \item Distruggere la torre o una fabbrica (Destroy)
 \end{itemize}
