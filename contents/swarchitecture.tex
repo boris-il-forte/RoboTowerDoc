@@ -35,8 +35,8 @@ Il nodo riceve i dati dalla porta seriale\footnote{di default viene utilizzato i
 \end{itemize}
 Inoltre, il nodo espone alcuni servizi che permettono di comandare i led presenti sul robot (\verb|green_led|, \verb|yellow_led| e \verb|red_led|), e un ulteriore servizio che consente di spegnere tutti i led (\verb|reset_led|). I led possono essere impostati nello stato di acceso, spento o lampeggiante. In particolare, per i led gialli e i led rossi, lo stato lampeggiante viene definito a livello dell'intero gruppo di led.
 
-A causa dell'alto rumore presente nei valori provenienti dai sonar, il valore $x_k$ che viene pubblicato sul topic \verb|sonar_data| è filtrato attraverso un filtro a media mobile esponenziale. Questo significa che il dato pubblicato all'arrivo del $k$-esimo campione $x_{cur}$ registrato dal sonar è dato da
-  \[ x_k = \alpha x_{cur} + (1 - \alpha) x_{k-1} \]
+A causa dell'alto rumore presente nei valori provenienti dai sonar, il valore $x_k$ che viene pubblicato sul topic \verb|sonar_data| è filtrato attraverso un filtro a media mobile esponenziale. Questo significa che il dato pubblicato all'arrivo del $k$-esimo campione $x_\text{cur}$ registrato dal sonar è dato da
+  \[ x_k = \alpha x_\text{cur} + (1 - \alpha) x_{k-1} \]
 dove $\alpha = 0.3$, valore sufficientemente basso da ridurre il rumore ad alta frequenza presente nel segnale, ma comunque abbastanza alto da rendere l'aggiornamento dei valori reattivo, e riuscire ad evitare efficacemente gli ostacoli.
 
 \section{Vision: identificazione degli oggetti}
@@ -150,10 +150,10 @@ dopo averle associate ad opportuni insiemi fuzzy nel file \verb|ctof.txt|. La su
 \label{fig:schemafuzzy}
 \end{figure}
 
-I comportamenti che sono stati implementati permettono al robot di:
+\noindent Sono stati implementati vari comportamenti, che permettono al robot di:
 \begin{itemize}
- \item Cercare casualmente la torre o le fabbriche (Search)
- \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (GoToTower e GoToFactory)
- \item Evitare gli ostacoli: AvoidObstacle serve per evitare ostacoli posti frontalmente, KeepDistance evita che il robot colpisca ostacoli al lato, mentre GoBack è una regola utilizzata in situazioni di emergenza, dove avanzare frontalmente non porterebbe a uscire da una situazione di blocco
- \item Distruggere la torre o una fabbrica (Destroy)
+ \item Cercare casualmente la torre o le fabbriche (\emph{Search})
+ \item Raggiungere la torre o la fabbrica, una volta che è stata trovata (\emph{GoToTower} e \textit{GoToFactory})
+ \item Evitare gli ostacoli: in particolare, \emph{AvoidObstacle} serve per evitare ostacoli posti frontalmente, \emph{KeepDistance} evita che il robot colpisca ostacoli al lato, mentre \emph{GoBack} è una regola utilizzata in situazioni di emergenza, dove avanzare frontalmente non porterebbe a uscire da una situazione di blocco
+ \item Distruggere la torre o una fabbrica (\emph{Destroy})
 \end{itemize}
