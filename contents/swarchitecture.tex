@@ -20,7 +20,7 @@ Il sistema da noi realizzato risulta quindi composto da vari nodi. Ciascuno di e
 \end{figure}
 
 \section{SpyKee}
-\emph{SpyKee} si occupa di interfacciare l'unità di elaborazione con le funzioni del robot che comunicano via Wi-Fi: permette di fornire i comandi ai cingoli e di ricevere le immagini catturate dalla telecamera. Questo nodo è l'adattamento a ROS di una libreria realizzata nei precedenti progetti, e ottenuta analizzando con un software di cattura dei pacchetti di rete la comunicazione tra il robot e il software di controllo per Microsoft Windows fornito dalla Meccano.
+\emph{SpyKee} si occupa di interfacciare l'unità di elaborazione con le funzioni del robot che comunicano via Wi-Fi: permette di fornire i comandi ai cingoli e di ricevere le immagini catturate dalla telecamera. Questo nodo è l'adattamento a ROS di una libreria realizzata nei precedenti progetti, e ottenuta analizzando il codice sorgente del firmware di SpyKee, disponibile sul sito \cite{spykee}.
 
 SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini ricevute dalla telecamera compresse in formato JPEG. Inoltre sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli. Tali comandi sono costituiti da due interi compresi tra $-90$ e $90$, che rappresentano la velocità tangenziale e angolare del robot, e vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro.
 

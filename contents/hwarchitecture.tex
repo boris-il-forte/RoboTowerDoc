@@ -11,7 +11,7 @@ L'elaborazione dei dati trasmessi dal robot e la definizione dei comportamenti i
 
 L'attore principale del gioco è il robot autonomo \emph{Spykee}, un modello commerciale della Meccano \cite{spykeeweb}, disponibile nel laboratorio di Intelligenza Artificiale e Robotica (AIRLab) del Politecnico di Milano. Questo modello è già stato utilizzato con successo in precedenti progetti nell'ambito dei Robogame\footnote{in particolare nelle varie versioni di Robowii \cite{robowii} }.
 
-Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini fortemente compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, il robot crea all'accensione una rete Wi-Fi ad-hoc.
+Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini fortemente compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, viene utilizzata una rete Wi-Fi. Delle varie modalità di connessione messe a disposizione dal robot, viene utilizzata la modalità ``local ad hoc mode'': il robot crea all'accensione una rete Wi-Fi ad-hoc a cui il computer deve essere connesso.
 
 \begin{figure}[h]
 \centering

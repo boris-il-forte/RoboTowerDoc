@@ -71,7 +71,7 @@ dalla cartella principale del progetto.
 In alternativa, è possibile utilizzare il comando \verb|rosmake <nome_package>| per ognuno dei package realizzati. Quest'ultimo comando dovrebbe tentare di compilare e/o risolvere automaticamente le dipendenze, ma in generale risulta più lento e fornisce meno indicazioni sullo standard output rispetto all'utilizzo di \verb|make|.
 \end{nota}
 
-\section{Avvio del gioco} Una volta collegato al computer lo XBee e acceso il robot, collegarsi alla rete wireless creata da Spykee (il cui SSID è SPYKEE seguito dal codice identificativo del robot). A questo punto, per avviare ROS e tutti i nodi che controllano il robot, è sufficiente eseguire il comando
+\section{Avvio del gioco} Una volta collegato al computer lo XBee e acceso il robot, collegarsi alla rete wireless creata da Spykee\footnote{il SSID è SPYKEE seguito da un codice identificativo del robot. Non è necessario inserire manualmente i parametri della connessione (indirizzo IP, ...), in quanto il robot funziona da server DHCP}. A questo punto, per avviare ROS e tutti i nodi che controllano il robot, è sufficiente eseguire il comando
 \begin{verbatim}
 $ roslaunch spykee.launch
 \end{verbatim}
