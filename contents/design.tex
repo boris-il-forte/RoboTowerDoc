@@ -5,10 +5,8 @@
 In questo capitolo verranno descritte le linee guida e i passi seguiti per progettare il gioco.
 
 \section{Linee guida}
-Per sviluppare RoboTower, sono state seguite alcune linee guida per lo sviluppo di un Robogame competitivo "di successo", ricavate a partire da alcuni articoli sull'argomento. 
+Innanzitutto, si è cercato di seguire alcune linee guida per lo sviluppo di un Robogame competitivo "di successo", ricavate a partire da alcuni articoli sull'argomento. Un Robogame deve avere alcune caratteristiche generali:
 \begin{itemize}
-\item Caratteristiche generali di un Robogame:
-\begin{enumerate}
 \item Deve consistere in almeno un robot e almeno un giocatore umano in grado di interagire tra di loro cooperativamente o competitivamente
 \item Basso costo e alta efficienza dell’uso dei componenti
 \item Sicuro da giocare
@@ -16,30 +14,18 @@ Per sviluppare RoboTower, sono state seguite alcune linee guida per lo sviluppo 
 \item Il robot deve essere visto dal giocatore come un agente razionale
 \item Il gioco deve essere provato sul campo
 \item il gioco deve coinvolgere più sensi (del giocatore... e del robot) : vista, udito, tatto (ossia colori, suoni e forme)
-\end{enumerate}
-\item Caratteristiche del gioco
-\begin{enumerate}
-\item Obiettivo: deve essere chiaro e semplice, e deve essere suddiviso in sotto-obiettivi (punti) se è troppo lungo
-\item Difficoltà adatta/adattabile al giocatore
-\item Regole facili da capire e imparare
-\item Azioni facili da compiere
-\item Il sistema “gioco” reagisce prontamente alle azioni del giocatore
-\end{enumerate}
-\item Caratteristiche del robot
-\begin{enumerate}
-\item Reagisce al comportamento umano bene (a meno di semplificazioni)
-\item Riceve input nella maniera più affidabile e credibile possibile (anche a costo di semplificazioni)
+\end{itemize}
+In aggiunta a queste, il gioco che viene implementato deve avere un obiettivo chiaro e semplice, che deve poter essere suddiviso in sotto-obiettivi (punti) nel caso sia troppo lungo. La difficoltà del gioco deve essere adatta o adattabile al giocatore, le regole devono essere semplici, da capire e imparare e le azioni facili da compiere. Inoltre, perché il gioco sia coinvolgente, tutto il sistema deve reagire reagisce prontamente alle azioni dell'utente.
+
+L'efficacia dell'interazione con il giocatore viene influenzata notevolmente da robot, che dovrebbe reagire bene (a meno di semplificazioni) al comportamento umano, e avere alcune caratteristiche:
+\begin{itemize}
+\item Ricevere input nella maniera più affidabile e credibile possibile (anche a costo di semplificazioni)
 \item Aspetto adatto al gioco
 \item Comportamento che non appare casuale, ma razionale e pensato
 \item Funzionamento in tempo reale
-\end{enumerate}
-\item Obiettivi di Robogame
-\begin{enumerate}
-\item Portare il gaming verso la sua naturale evoluzione verso la “fisicità”, strada cominciata da Nintendo con il wii, e ormai accettata dalle maggiori case di videogiochi.
-\item Introdurre nella vita quotidiana il robot come qualcosa di “familiare” e utile
-\item Diffondere l’interesse per la robotica ad un pubblico più ampio
-\end{enumerate}
 \end{itemize}
+
+L'obiettivo generale della progettazione dei Robogame è duplice: da un lato portare il gaming verso la sua naturale evoluzione verso la “fisicità”, strada cominciata da Nintendo con il wii, e ormai accettata dalle maggiori case di videogiochi, mentre dall'altro introdurre nella vita quotidiana il robot come qualcosa di “familiare” e utile e diffondere l’interesse per la robotica ad un pubblico più ampio.
 
 \section{Considerazioni preliminari al progetto del gioco}
 Per avere un’idea del gioco, si è partito dal presupposto che Robogame sia l’evoluzione del gaming tradizionale, si è partiti quindi dal considerare i generi più usati nei videogiochi attuali:
