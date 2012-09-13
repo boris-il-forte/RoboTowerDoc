@@ -22,7 +22,7 @@ Il sistema da noi realizzato risulta quindi composto da vari nodi. Ciascuno di e
 \section{SpyKee}
 \emph{SpyKee} si occupa di interfacciare l'unità di elaborazione con le funzioni del robot che comunicano via Wi-Fi: permette di fornire i comandi ai cingoli e di ricevere le immagini catturate dalla telecamera. Questo nodo è l'adattamento a ROS di una libreria realizzata nei precedenti progetti, e ottenuta analizzando il codice sorgente del firmware di SpyKee, disponibile sul sito \cite{spykee}.
 
-SpyKee pubblica messaggi di tipo \verb|std_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini ricevute dalla telecamera compresse in formato JPEG. Inoltre sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli. Tali comandi sono costituiti da due interi compresi tra $-90$ e $90$, che rappresentano la velocità tangenziale e angolare del robot, e vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro.
+SpyKee pubblica messaggi di tipo \verb|sensors_msgs::CompressedImage| sull'argomento \verb|spykee_camera|, che contengono le immagini ricevute dalla telecamera compresse in formato JPEG e messaggi di tipo \verb|std_msgs::Int8| sull'argomento \verb|spykee_battery| contenenti gli aggiornamenti sullo stato della carica della batteria del robot (i valori sono negativi se il robot è in carica). Inoltre sottoscrive messaggi di tipo \verb|SpyKee::Motion| sull'argomento \verb|spykee_motion|, contenenti i comandi da inviare ai cingoli. Tali comandi sono costituiti da due interi compresi tra $-90$ e $90$, che rappresentano la velocità tangenziale e angolare del robot, e vengono convertiti dal nodo nei corrispondenti comandi al cingolo destro e sinistro.
 
 \section{Echoes}
 \emph{Echoes} comunica via Zigbee con l'hardware aggiunto a posteriori al robot: sonar, led, lettore RFID, e ricevitori dei comandi inviati dagli interruttori posti sulle torri e sulle fabbriche.
@@ -58,7 +58,7 @@ Il classificatore viene generato a partire da un file che contiene semplicemente
 \section{RoboTower\_Game: la logica di gioco}
 \begin{figure}
 \centering
-\includegraphics[scale=0.43]{images/rtgame}
+\includegraphics[scale=0.39]{images/rtgame}
 \caption{Schermata principale dell'interfaccia di controllo del gioco}
 \end{figure}
 
@@ -157,3 +157,4 @@ dopo averle associate ad opportuni insiemi fuzzy nel file \verb|ctof.txt|. La su
  \item Evitare gli ostacoli: in particolare, \emph{AvoidObstacle} serve per evitare ostacoli posti frontalmente, \emph{KeepDistance} evita che il robot colpisca ostacoli al lato, mentre \emph{GoBack} è una regola utilizzata in situazioni di emergenza, dove avanzare frontalmente non porterebbe a uscire da una situazione di blocco
  \item Distruggere la torre o una fabbrica (\emph{Destroy})
 \end{itemize}
+Inoltre, la regola CanGoBack permette di ottenere in uscita un valore che indica, in base ai valori ricevuti dal sonar posteriore, se il robot può o meno muoversi all'indietro senza andare a sbattere. Questo valore viene utilizzato da IsAac durante l'attivazione dell'azione \verb|go_back| associata alla trappola.
