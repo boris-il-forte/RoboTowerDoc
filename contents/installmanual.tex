@@ -2,12 +2,12 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:installazione}
 
-Il software realizzato è stato sviluppato per un sistema Linux. Le istruzioni seguenti si riferiscono principalmente alla distribuzione Ubuntu (in particolare, sono state testate con la versione 12.04) in quanto è l'unica supportata da ROS. Il software è stato testato anche con Debian: l'unica differenza risiede nell'installazione di ROS, che va fatta manualmente.
+Il software realizzato è stato sviluppato per un sistema Linux. Le istruzioni seguenti si riferiscono principalmente alla distribuzione Ubuntu\footnote{in particolare, sono state testate con la versione 12.04 (Precise Pangolin)} essendo l'unica supportata da ROS. Il software è stato testato anche con Debian: l'unica differenza risiede nell'installazione di ROS, che va fatta manualmente.
 
 \section{Installazione del software lato PC}
-\paragraph{Installazione di ROS} Le istruzioni di installazione di ROS sono presenti nel sito ufficiale, \url{www.ros.org}, e variano a seconda della distribuzione. In particolare, per Ubuntu, è necessario aggiungere i repository di ROS alle sorgenti software di sistema, dopodiché è possibile installare ROS direttamente dal package manager di Ubuntu. 
+\paragraph{Installazione di ROS} Le istruzioni di installazione di ROS sono presenti nel sito ufficiale, \url{www.ros.org}, e variano a seconda della distribuzione. In particolare, per Ubuntu, è necessario aggiungere i repository di ROS alle sorgenti software di sistema, dopodiché è possibile installare ROS direttamente dal package manager. 
 
-\begin{nota} I comandi per installare ROS su Ubuntu, riferiti all'ultima versione di ROS (\verb|fuerte|) e del sistema operativo (\verb|precise|) disponibile al momento della scrittura della documentazione, sono:
+\begin{nota} I comandi per installare ROS su Ubuntu, riferiti all'ultima versione di ROS (ROS Fuerte) e del sistema operativo disponibile al momento della scrittura della documentazione, sono:
 \begin{verbatim}
 $ sudo sh -c `
     echo "deb http://packages.ros.org/ros/ubuntu precise main" 
@@ -49,11 +49,11 @@ $ make
 $ roslocate info opencv2 > opencv2.rosinstall
 $ rosinstall ~/ros opencv2.rosinstall
 \end{verbatim}
-\paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git:
+\paragraph{Compilazione del software} Scaricare i sorgenti clonando il repository:
 \begin{verbatim}
 $ git clone git://github.com/pogliamarci/robotower.git
 \end{verbatim}
-oppure dalla pagina del progetto sull'airwiki in una cartella qualunque. Una volta scaricati i file, è necessario aggiungere la cartella del progetto alla variabile d'ambiente \verb|ROS_PACKAGE_PATH|, inserendo in fondo al file \verb|~/.bashrc| la riga
+oppure scaricandoli dalla pagina del progetto sull'airwiki in una cartella qualunque. Una volta scaricati i file, è necessario aggiungere la cartella del progetto alla variabile d'ambiente \verb|ROS_PACKAGE_PATH|, inserendo in fondo al file \verb|~/.bashrc| la riga
 \begin{verbatim}
 export ROS_PACKAGE_PATH=path:$ROS_PACKAGE_PATH
 \end{verbatim}
