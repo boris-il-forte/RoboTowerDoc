@@ -1,0 +1,67 @@
+\chapter{Progetto del gioco}
+%\markboth{Introduzione}{Introduzione}
+\label{cap:progetto}
+
+In questo capitolo verranno descritte le linee guida e i passi seguiti per progettare il gioco.
+
+\section{Linee guida}
+Innanzitutto, si è cercato di seguire alcune linee guida per lo sviluppo di un Robogame competitivo "di successo", ricavate a partire da alcuni articoli sull'argomento. Un Robogame deve avere alcune caratteristiche generali:
+\begin{itemize}
+\item consistere in almeno un robot e almeno un giocatore umano in grado di interagire tra di loro cooperativamente o competitivamente
+\item basso costo e alta efficienza dell’uso dei componenti
+\item sicuro da giocare
+\item semplice e divertente (per chi ci gioca)
+\item il robot deve essere visto dal giocatore come un agente razionale
+\item il gioco deve essere provato sul campo
+\item il gioco deve coinvolgere più sensi (del giocatore... e del robot) : vista, udito, tatto (ossia colori, suoni e forme)
+\end{itemize}
+In aggiunta a queste, il gioco che viene implementato deve avere un obiettivo chiaro e semplice, che deve poter essere suddiviso in sotto-obiettivi (punti) nel caso sia troppo lungo. La difficoltà del gioco deve essere adatta o adattabile al giocatore, le regole devono essere semplici da capire e imparare e le azioni facili da compiere. Inoltre, perché il gioco sia coinvolgente, tutto il sistema deve reagire reagisce prontamente alle azioni dell'utente.
+
+L'efficacia dell'interazione con il giocatore viene influenzata notevolmente da robot, che dovrebbe reagire bene (a meno di semplificazioni) al comportamento umano, e avere alcune caratteristiche:
+\begin{itemize}
+\item Ricevere input nella maniera più affidabile e credibile possibile (anche a costo di semplificazioni)
+\item Aspetto adatto al gioco
+\item Comportamento che non appare casuale, ma razionale e pensato
+\item Funzionamento in tempo reale
+\end{itemize}
+
+L'obiettivo generale della progettazione dei Robogame è quello di portare il gaming verso la sua naturale evoluzione verso la ``fisicità'', strada cominciata da Nintendo con il wii, e ormai accettata dalle maggiori case di videogiochi. I Robogames vogliono inoltre introdurre nella vita quotidiana il robot come qualcosa di ``familiare'' e utile, nonché diffondere l'interesse per la robotica ad un pubblico più ampio.
+
+\section{Considerazioni preliminari al progetto del gioco}
+Per avere un’idea del gioco, si è partito dal presupposto che Robogame sia l’evoluzione del gaming tradizionale, si è partiti quindi dal considerare i generi più usati nei videogiochi attuali:
+\begin{itemize}
+\item Strategici
+\item Gestionali (esclusi in ottica robogame in quanto non adatti)
+\item Sparatutto (esclusi in quanto fin troppo sfruttati, sia dai robot che dai videogiochi)
+\item Giochi di ruolo (esclusi a causa del numero limitato di robot in gioco)
+\item Platform (esclusi perchè fisicamente poco realizzabili da un robot attuale)
+\item Sportivi
+\end{itemize}
+Dopo aver escluso i generi non adatti, abbiamo considerato approfonditamente i due generi rimasti, e i loro limiti. Nel caso dei giochi sportivi, il limite è dato dalla necessità di avere un robot abbastanza dinamico, mentre i giochi strategici sono limitati dalla scarsa dinamicità di azione.
+
+Una prima distinzione all'interno dei giochi delle categorie considerate riguarda l'uso della palla.
+I giochi con palla rendono il robot più complesso, ma sono immediati e coinvolgenti, e non pongono gravi problemi di analisi dinamica del campo di gioco. Sono certamente semplici, intuitivi e dinamici. Permettono di variare strategia, soprattutto se il gioco avviene con più agenti intelligenti in campo.
+I giochi senza palla necessitano di robot in generale semplici, che richiedano al più velocità discrete. Sono meno coinvolgenti (anche se dipende dai gusti) e meno dinamici, o comunque se sono dinamici danno meno spazio a strategie pensate come “razionali” (se devo scappare da qualcuno... scappo) oppure paradossalmente prevedono l’introduzione di idee complesse, come quella di nascondiglio.
+Un grosso problema legato all'uso della palla riguarda la velocità. Alcune idee per limitare la velocità della palla sono:
+\begin{itemize}
+\item Uso dei palloncini
+\item Uso di palline da tennis sgonfie, con l’obbligo di rimbalzo (urto anelastico che “assorbe” energia cinetica)
+\item Uso di zone determinate per il gioco e porte.
+\end{itemize}
+
+Dei giochi strategici abbiamo considerato 3 sotto categorie:
+\begin{itemize}
+\item Derivati dai giochi da tavolo. Esempio: labirinto magico (famoso gioco da tavolo in scatola), in cui magari il labirinto è fatto con segnali luminosi (se possibile) o in altro modo. Il labirinto magico è un labirinto che può cambiare configurazione in cui bisogna trovare degli oggetti (oppure potrebbe essere l’uscita... oppure il robot). Altri esempi: giochi come “battaglia navale” o altri giochi di strategia pensati.
+\item Tower Defense. Un esempio di Tower defense potrebbe essere un gioco ispirato a Rock Of Ages, che consiste nel difendere il proprio castello dall’assalto di una palla demolitrice e comandare la palla contro quello dell’avversario. In questo caso il robot potrebbe svolgere la funzione della “roccia”, evitando gli ostacoli insormontabili, e travolgendo/distruggendo (ovvero spostando... o passandoci sopra) quelli che invece potrebbero solo rallentarlo, o che gli bloccano il passaggio fino a raggiungere l’obiettivo. Più robot possono cooperare contro più umani per l’assalto al “castello”, oppure si possono fare due o più squadre robot/umano e simulare una battaglia alla “Rock Of Ages”
+\item Da bambini e/o di intelligenza: giochi “infantili” possono essere trova \& nascondi (simili alla caccia al tesoro) distruggi \& costruisci, oppure un gioco in cui l’obiettivo del robot siano alcuni oggetti, però il robot non deve farsi individuare dal giocatore che ha gli oggetti... e il giocatore deve portare i robot a tradirsi attraverso questi oggetti, posizionandoli adeguatamente nell’area di gioco, sfruttando fondamentalmente lo stesso concetto della pesca.
+\end{itemize}
+
+\section{Design del gioco}
+In particolare sono state stese tre bozze di gioco, una (RoboTower) basata sull'idea di Tower Defense, che è poi stata effettivamente implementata, e due bozze, entrambe focalizzate sull'uso della palla. Delle bozze scartate, la prima consiste in un gioco sportivo simile al tennis, in cui il robot deve svolgere azioni limitate rispetto all'umano, la seconda consiste in un gioco ispirato ai giochi infantili e basato su un palloncino.
+In generale, è preferibile pensare a giochi in cui i ruoli di giocatore e robot siano diversi (come nella bozza Tower Defense), il che permette di aggirare eventuali limitazioni del robot, se non sfruttarle a vantaggio dell’esperienza di gioco.
+Un altro problema, oltre a quello già citato della velocità, legato ai giochi che utilizzano la palla, è la necessità da parte del robot di effettuare movimenti complessi: la palla deve infatti essere sollevata da terra, colpita (eventualmente al volo) e direzionata, causando problemi nell'implementazione con una precisione accettabile su un robot di tali comportamenti. Per tale motivo, le bozze impieganti la palla sono state scartate.
+Nello sviluppo dello storyboard di RoboTower, è stata prestata particolare attenzione a quali aspetti del gioco siano completamente controllabili dalla logica di gioco e quali invece non sono controllabili in maniera efficiente e\o sufficientemente precisa, lasciando il compito di rispettare queste ultime regole alla "buona fede" del giocatore.
+\begin{itemize}
+\item E’ stata accettata, almeno momentaneamente, l’idea del lancia-palle, usabile per abbattere sia la torre che le fabbriche. Il modo effettivo con cui queste strutture possono essere distrutte è ancora da discutere, e dipenderà dalle caratteristiche dello spara-palle.
+\item Il gioco è stato progettato per essere sia facilmente espandibile, aumentando ad esempio il numero di robot o di torri da utilizzare, di conseguenza è possibile implementare versioni del gioco con più giocatori umani che collaborino con o contro più robot.
+\end{itemize}

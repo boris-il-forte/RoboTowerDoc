@@ -11,7 +11,7 @@ L'elaborazione dei dati trasmessi dal robot e la definizione dei comportamenti i
 
 L'attore principale del gioco è il robot autonomo \emph{Spykee}, un modello commerciale della Meccano \cite{spykeeweb}, disponibile nel laboratorio di Intelligenza Artificiale e Robotica (AIRLab) del Politecnico di Milano. Questo modello è già stato utilizzato con successo in precedenti progetti nell'ambito dei Robogame\footnote{in particolare nelle varie versioni di Robowii \cite{robowii} }.
 
-Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini fortemente compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, viene utilizzata una rete Wi-Fi. Delle varie modalità di connessione messe a disposizione dal robot, viene utilizzata la modalità ``local ad hoc mode'': il robot crea all'accensione una rete Wi-Fi ad-hoc a cui il computer deve essere connesso.
+Spykee si muove tramite due cingoli (con tecnica differential drive). Una telecamera montata sulla testa permette di catturare immagini fortemente compresse in formato JPEG con una risoluzione di $320 \times 240$ pixel a una frequenza di circa $20$ frame al secondo. Per comunicare con il computer che effettua il controllo, viene utilizzata una rete Wi-Fi. Delle varie modalità di connessione messe a disposizione dal robot, viene utilizzata la modalità ``local ad hoc mode'': il robot crea all'accensione una rete ad-hoc a cui il computer deve essere connesso.
 
 \begin{figure}[h]
 \centering
@@ -38,7 +38,7 @@ Tutti i vari componenti sono state raccolti in una apposita scatola e sono alime
 \caption{La scatola con i componenti che sono stati aggiunti al robot}
 \end{figure}
 
-\noindent Le altre aggiunte hardware sono strettamente collegate ad altri componenti del gioco, pertanto verranno descritte nei paragrafi successivi.
+Le altre aggiunte hardware sono strettamente collegate ad altri componenti del gioco, pertanto verranno descritte nei paragrafi successivi.
 
 
 \section{Ostacoli attivi}
@@ -47,7 +47,7 @@ Per quanto riguarda l'implementazione delle \emph{trappole} (gli ostacoli che mo
 \begin{figure}
 \centering
 \includegraphics[scale=0.13]{images/spykeecontorri}
-\caption{Spykee, con due fabbriche, una torre e alcune delle carte trappola}
+\caption{Spykee, con due fabbriche, una torre e alcune delle carte trappola (tag RFID)}
 \end{figure}
 
 Poiché nel gioco viene già utilizzata una telecamera per poter riconoscere alcuni oggetti, inizialmente si è pensato di implementare anche le trappole utilizzando meccanismi di visione artificiale. In particolare, sono stati presi in considerazione vari tipi di marker bidimensionali, in particolare i ``Data Matrix'' e i tag della libreria ``ARToolkitPlus''\footnote{A differenza dei codici Data Matrix, che sono pensati per contenere informazioni arbitrarie, ad esempio URL oppure informazioni di spedizione, i tag ARToolkitPlus codificano solo un id, e sono pensati per applicazioni di identificazione, localizzazione, \dots (anche in presenza di distorsioni nell'immagine o altre condizioni non ottimali).}. Purtroppo, tutti questi meccanismi hanno dato scarsi risultati in termini di velocità oppure di qualità del riconoscimento. I difetti riscontrati sono, ad esempio, un'enorme dipendenza dalle condizioni di luce, scarsi risultati in movimento, dovuti anche alla lentezza degli algoritmi (specialmente nel caso dei Data Matrix), e alle pessime condizioni delle immagini catturate. Per questi motivi, le soluzioni basate sul riconoscimento di tag mediante visione sono state scartate.
