@@ -34,21 +34,10 @@ $ sudo easy_install -U rosinstall vcstools rosdep
 \item le librerie Qt4\footnote{Probabilmente le librerie Qt sono già installate da ROS come dipendenza} (\verb|libqt4-dev|), utilizzate per l'interfaccia grafica
 \item le librerie Qt Mobility (\verb|qtmobility-dev|), che contengono QtMultimediaKit, utilizzato per la riproduzione dei suoni
 \end{itemize}
-Inoltre, sono necessari i pacchetti di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}, contenuto nello stack \texttt{ias\_perception}} e \verb|opencv2|. Per scaricare questi pacchetti nella home (nella cartella \verb|~/ros|), è necessario innanzitutto inizializzare tale cartella come workspace:
-\begin{verbatim}
-$ rosinstall ~/ros /opt/ros/fuerte
-$ echo "source ~/ros/setup.bash" >> ~/.bashrc
-$ . ~/.bashrc
-\end{verbatim}
-Poi, installare e compilare i pacchetti come segue:
-\begin{verbatim}
-$ roslocate info ann > ann.rosinstall
-$ rosinstall ~/ros ann.rosinstall
-$ roscd ann
-$ make
-$ roslocate info opencv2 > opencv2.rosinstall
-$ rosinstall ~/ros opencv2.rosinstall
-\end{verbatim}
+
+È inoltre necessario installare il pacchetto di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}}, contenuto nello stack \texttt{ias\_perception}. Attualmente (marzo 2013), questo stack non è più disponibili sul sito di ROS (sono stati deprecati). Ann è parte del package "ias-perception", che si può scaricare dal repository git seguente:
+\url{http://code.in.tum.de/git/ias-perception.git}, accessibile anche dall'interfaccia web che si trova al link \url{http://code.in.tum.de/indefero/index.php//p/ias-perception/source/tree/master/}. Una volta scaricato è sufficiente compilarlo con il comando \verb|make| sia dalla cartella principale \verb|ias-perception| che dalla sottocartella \verb|ann|, e successivamente copiarlo in una cartella presente nel PATH degli stack di ROS (ad esempio \verb|/opt/ros/fuerte/stacks|).
+
 \paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git:
 \begin{verbatim}
 $ git clone git://github.com/pogliamarci/robotower.git
@@ -150,7 +139,7 @@ dove \verb|ch.elf| è il percorso del firmware compilato che si vuole caricare s
 Attualmente, i pin presenti sulla Discovery Board montata sul robot sono assegnati in questo modo:
 \begin{itemize}
 \item Collegamento con i sonar (timer): \verb|PA8| (nord), \verb|PB4| (sud), \verb|PA0| (ovest), \verb|PC6| (est)
-\item Seriale per collegamento con lo XBee, bitrate 115200 bps: \verb|PA2| (TX) e \verb|PA3| (RX)
+\item Seriale per collegamento con lo XBee, bitrate 115200 bps: \verb|PA2| (TX, va collegato al terminale \verb|RX| dello XBee) e \verb|PA3| (RX, va collegato al terminale \verb|TX| dello XBee)
 \item Ricevitore dei segnali inviati
 	\begin{itemize}
 	\item Dalle fabbriche: \verb|PD0|, \verb|PD1| e \verb|PD2|
@@ -172,3 +161,26 @@ Il file \verb|board.h| permette di configurare le funzioni assegnate ai vari pin
 \paragraph{Alimentazione} Tutti i dispositivi (discovery board, XBee, lettore RFID, sonar, ricevitore Atmel, driver per i led a infrarossi) vanno alimentati a $+5$V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
 
 \paragraph{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l'unità di elaborazione e il robot, pertanto per il debugging di problemi di configurazione è sufficiente utilizzare un terminale seriale, come \verb|screen| o \verb|minicom| su Linux. Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi. Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di $115200$ bps, e impostare come Destination Address (High e Low) il Serial Number dell'altro Xbee.
+
+\section{Comandi per il firmware del robot}
+Il firmware installato sulla discovery board presente nel robot accetta alcuni comandi che vengono inviati dal nodo \verb|Echoes| attraverso il collegamento seriale, e permettono di controllare i led:
+\begin{itemize}
+\item \verb|reset|: spegne tutti i led
+\item \verb|led|: comanda i led colorati. Il comando è seguito da \verb|R|, \verb|Y| oppure \verb|G| a seconda che si vogliano comandare rispettivamente i led rossi, i led gialli oppure il led verde che c'è sulla testa di Spykee. Il secondo argomento del comando può essere \verb|B| per attivare la modalità lampeggiante del gruppo di led selezionato, oppure una stringa di cifre binarie che indicano se ognuno dei led del gruppo deve essere spento (\verb|0|) oppure acceso (\verb|1|). Ad esempio, il comando
+\begin{verbatim}
+    led R 1101
+\end{verbatim}
+accende il primo, il secondo e l'ultimo dei led rossi e spegne il terzo, mentre il comando
+\begin{verbatim}
+    led G B
+\end{verbatim}
+fa lampeggiare il led verde sulla testa del robot.
+\item \verb|infrared on| accende i led a infrarossi, mentre \verb|infrared off| li spegne.
+\end{itemize}
+
+I messaggi inviati dal robot al computer attraverso il collegamento seriale sono composti da una singola linea (sono terminati da \verb|CR LF|) e contengono all'inizio la tipologia tra parentesi quadre. Le tipologie di messaggio che sono state definite, insieme con un esempio del loro formato, sono:
+\begin{itemize}
+\item \verb|[SONAR] N:1443,S:161,W:3444,E:3458| contiene per i quattro sonar installati (nord, sud, ovest, est) la distanza rilevata in millimetri
+\item \verb|[RFID] <id>| contiene l'ID del tag RFID rilevato. Contiene anche il checksum, calcolato come da datasheet del lettore ID-12 (la correttezza viene calcolata da Echoes e non a bordo del firmware).
+\item \verb|[TOWER] destroyed <N>| indica che una torre o fabbrica è stata distrutta. \verb|<N>| è compreso tra $1$ e $4$ e identifica la torre o la fabbrica che è stata distrutta.
+\end{itemize}
