@@ -2,12 +2,12 @@
 %\markboth{Introduzione}{Introduzione}
 \label{cap:installazione}
 
-Il software realizzato è stato sviluppato per un sistema Linux. Le istruzioni seguenti si riferiscono principalmente alla distribuzione Ubuntu (in particolare, sono state testate con la versione 12.04) in quanto è l'unica supportata da ROS. Il software è stato testato anche con Debian: l'unica differenza risiede nell'installazione di ROS, che va fatta manualmente.
+Il software realizzato è stato sviluppato per un sistema GNU/Linux. Le istruzioni seguenti si riferiscono principalmente alla distribuzione Ubuntu \cite{UbuntuDistro} in quanto è l'unica supportata da ROS (è stata testata la versione 12.04). Il software è stato testato anche con Debian \cite{DebianDistro} (l'unica differenza risiede nell'installazione di ROS, che va fatta manualmente).
 
 \section{Installazione del software lato PC}
-\paragraph{Installazione di ROS} Le istruzioni di installazione di ROS sono presenti nel sito ufficiale, \url{www.ros.org}, e variano a seconda della distribuzione. In particolare, per Ubuntu, è necessario aggiungere i repository di ROS alle sorgenti software di sistema, dopodiché è possibile installare ROS direttamente dal package manager di Ubuntu. 
+\subsection*{Installazione di ROS} Le istruzioni di installazione di ROS sono presenti nel sito ufficiale (\url{www.ros.org}) e variano a seconda della distribuzione in uso. Nel caso di Ubuntu, è sufficiente aggiungere i repository di ROS alle sorgenti software di sistema, e quindi proseguire con l'installazione direttamente dal package manager di Ubuntu. 
 
-\begin{nota} I comandi per installare ROS su Ubuntu, riferiti all'ultima versione di ROS (\verb|fuerte|) e del sistema operativo (\verb|precise|) disponibile al momento della scrittura della documentazione, sono:
+\begin{nota} Ecco i comandi per installare ROS (versione \verb|fuerte|) su Ubuntu (riferito alla versione 12.04 LTS, ossia \verb|precise|):
 \begin{verbatim}
 $ sudo sh -c `
     echo "deb http://packages.ros.org/ros/ubuntu precise main" 
@@ -16,7 +16,9 @@ $ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 $ sudo apt-get update
 $ sudo apt-get install ros-fuerte-desktop
 \end{verbatim}
-Una volta installati i pacchetti, è necessario fare in modo che le variabili di ambiente di ROS vengano impostate all'avvio:
+È possibile che i alcune versioni di Ubuntu non siano supportate da ROS, specie se troppo recenti. Se si dispone di una versione non supportata, sarà necessario installare e configurare ROS manualmente. 
+
+Una volta installato ROS, è necessario configurare l'ambiente, facendo in modo che venga eseguito all'avvio della shell Bash un apposito script. I seguenti comandi servono allo scopo:
 \begin{verbatim}
 $ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
 $ . ~/.bashrc
@@ -27,28 +29,29 @@ $ sudo easy_install -U rosinstall vcstools rosdep
 \end{verbatim}
 \end{nota}
 
-\paragraph{Installazione delle dipendenze} Per poter compilare correttamente il software realizzato, è necessario che siano presenti sul sistema, oltre a ROS, i seguenti pacchetti installabili dai repository della distribuzione Linux in uso:
+\subsection*{Installazione delle dipendenze} Per poter compilare ed eseguire RoboTower, è necessario che siano presenti sul sistema anche i seguenti pacchetti. Questi possono essere installati dai repository di Ubuntu\footnote{con il comando \texttt{sudo apt-get install <nomepacchetto>}} o della maggior parte delle distribuzioni Linux:
 \begin{itemize}
-\item \verb|flex| e \verb|bison|, utilizzate per generare i parser di Mr. Brian
-\item le librerie OpenCV (\verb|libopencv-dev|), utilizzate per elaborare le immagini in Vision e in LittleEndian
-\item le librerie Qt4\footnote{Probabilmente le librerie Qt sono già installate da ROS come dipendenza} (\verb|libqt4-dev|), utilizzate per l'interfaccia grafica
-\item le librerie Qt Mobility (\verb|qtmobility-dev|), che contengono QtMultimediaKit, utilizzato per la riproduzione dei suoni
+\item \verb|flex| e \verb|bison|: utilizzati per generare il codice di analizzatori lessicali (Flex) e parser (Bison) relativi ai file di configurazione di Mr. Brian
+\item \verb|libopencv-dev|: le librerie OpenCV, utilizzate per elaborare le immagini nei nodi Vision e LittleEndian
+\item \verb|libqt4-dev|: le librerie Qt4, utilizzate per realizzare l'interfaccia grafica (nodo RoboTower-Game). È consigliato installare anche le librerie PyQt (i binding delle Qt per Python, \verb|python-qt4|), utilizzate per alcune interfacce grafiche di debug \footnote{Queste interfacce (\textsf{displaySonar.py} e \textsf{manualController.py}) utilizzano Python 2 e non sono compatibili con Python 3. Se non funzionano, è probabile che nella vostra distribuzione il comando \texttt{python} sia un link simbolico a \texttt{python3}. In questo caso, cambiate la linea \texttt{\#!/usr/bin/env python} con il percorso dell'interprete corretto}
+\item \verb|qtmobility-dev|: le librerie Qt Mobility contengono QtMultimediaKit, utilizzato per la riproduzione dei suoni nel nodo RoboTower-Game
 \end{itemize}
 
-È inoltre necessario installare il pacchetto di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}}, contenuto nello stack \texttt{ias\_perception}. Attualmente (marzo 2013), questo stack non è più disponibili sul sito di ROS (sono stati deprecati). Ann è parte del package "ias-perception", che si può scaricare dal repository git seguente:
-\url{http://code.in.tum.de/git/ias-perception.git}, accessibile anche dall'interfaccia web che si trova al link \url{http://code.in.tum.de/indefero/index.php//p/ias-perception/source/tree/master/}. Una volta scaricato è sufficiente compilarlo con il comando \verb|make| sia dalla cartella principale \verb|ias-perception| che dalla sottocartella \verb|ann|, e successivamente copiarlo in una cartella presente nel PATH degli stack di ROS (ad esempio \verb|/opt/ros/fuerte/stacks|).
+È inoltre necessario installare il pacchetto di ROS \verb|ann|\footnote{\url{http://ros.org/wiki/ann}}, che è contenuto nello stack \texttt{ias\_perception}. Attualmente (marzo 2013), questo stack è considerato deprecato e non è più disponibili sul sito di ROS. Ann è parte del package "ias-perception", che si può scaricare, al momento della revisione di questo manuale, clonando il seguente repository git\footnote{Il repository è accessibile anche da un'interfaccia web al link \url{http://code.in.tum.de/indefero/index.php//p/ias-perception/source/tree/master/}}:
+\begin{verbatim}
+$ git clone http://code.in.tum.de/git/ias-perception.git
+\end{verbatim}
+Una volta scaricato è sufficiente compilarlo con il comando \verb|make| \textbf{sia} dalla cartella principale \verb|ias-perception| \textbf{che} dalla sottocartella \verb|ann|, e successivamente copiarlo in una cartella presente nel PATH degli stack di ROS (ad esempio, se si è installato ROS utilizzando i pacchetti per Ubuntu, nella cartella \verb|/opt/ros/fuerte/stacks|).
 
-Inoltre, per il corretto funzionamento di alcuni tool di debug, è necessario avere installato l'interprete Python (versione 2), e le librerie PyQt (bindings delle Qt per Python).
-
-\paragraph{Compilazione del software} Innanzitutto, scaricare i sorgenti da git:
+\subsection*{Compilazione del software} Scaricare i sorgenti, clonando il repository in una cartella qualunque:
 \begin{verbatim}
 $ git clone git://github.com/pogliamarci/robotower.git
 \end{verbatim}
-oppure dalla pagina del progetto sull'airwiki in una cartella qualunque. Una volta scaricati i file, è necessario aggiungere la cartella del progetto alla variabile d'ambiente \verb|ROS_PACKAGE_PATH|, inserendo in fondo al file \verb|~/.bashrc| la riga
+o recuperare il file \verb|.zip| che contiene i sorgenti. Una volta che si hanno i sorgenti in una cartella del proprio computer, è necessario aggiungere questa cartella alla variabile d'ambiente \verb|ROS_PACKAGE_PATH|. Questo si può fare inserendo in fondo al file \verb|~/.bashrc| la riga
 \begin{verbatim}
 export ROS_PACKAGE_PATH=path:$ROS_PACKAGE_PATH
 \end{verbatim}
-dove \verb|path| va sostituito con il percorso completo della cartella che contiene i sorgenti del progetto. Dopo aver aggiornato il file \verb|~/.bashrc|, eseguire
+dove \verb|path| va sostituito con il percorso completo della cartella che contiene i sorgenti del progetto. Dopo aver aggiornato il file, eseguire
 \begin{verbatim}
 $ source ~/.bashrc
 \end{verbatim}
@@ -59,22 +62,25 @@ $ make
 dalla cartella principale del progetto.
 
 \begin{nota}
-In alternativa, è possibile utilizzare il comando \verb|rosmake <nome_package>| per ognuno dei package realizzati. Quest'ultimo comando dovrebbe tentare di compilare e/o risolvere automaticamente le dipendenze, ma in generale risulta più lento e fornisce meno indicazioni sullo standard output rispetto all'utilizzo di \verb|make|.
+In alternativa, è possibile utilizzare il comando \verb|rosmake <nome_package>| per ognuno dei package realizzati. Quest'ultimo comando dovrebbe tentare di compilare e/o risolvere automaticamente le dipendenze, ma in generale risulta più lento e fornisce meno indicazioni sullo standard output rispetto ad utilizzare semplicemente \verb|make|.
 \end{nota}
 
-\section{Avvio del gioco} Una volta collegato al computer lo XBee e acceso il robot, collegarsi alla rete wireless creata da Spykee\footnote{il SSID è SPYKEE seguito da un codice identificativo del robot. Non è necessario inserire manualmente i parametri della connessione (indirizzo IP, ...), in quanto il robot funziona da server DHCP}. A questo punto, per avviare ROS e tutti i nodi che controllano il robot, è sufficiente eseguire il comando
+\subsection*{Avvio del gioco} Una volta collegato al computer il dispositivo XBee e acceso il robot, collegarsi alla rete wireless creata da Spykee\footnote{il cui SSID è ``SPYKEE'' seguito dal identificativo del robot. Non è necessario inserire manualmente i parametri della connessione (indirizzo IP, ...), in quanto il robot funziona da server DHCP}. A questo punto, per avviare ROS e tutti i nodi che controllano il robot, è sufficiente eseguire il comando
 \begin{verbatim}
 $ roslaunch spykee.launch
 \end{verbatim}
 dalla cartella del progetto.
 
 \begin{nota}
-Se il nodo Echoes non riesce ad accedere alla porta seriale, è possibile che i permessi per l'utente corrente non consentano di aprire il dispositivo: per risolvere questo problema è sufficiente aggiungere l'utente corrente al gruppo \verb|dialout| oppure impostare i permessi corretti tramite regole di \verb|udev|.
+Se il nodo Echoes non riesce ad accedere alla porta seriale, è possibile che i permessi per l'utente corrente non consentano di aprire il dispositivo: per risolvere questo problema è sufficiente aggiungere l'utente corrente al gruppo \verb|dialout| oppure impostare i permessi corretti tramite regole di \verb|udev|. È anche possibile che il dispositivo sia riconosciuto correttamente, ma che non sia collegato al file \verb|/dev/ttyUSB0|: in questo caso, bisogna passare come parametro al nodo Echoes il percorso corretto tramite lina di comando.
 \end{nota}
 
-\section{Firmware del microcontrollore}
+\chapter{Manuale del firmware}
 
-Il firmware è stato realizzato per la scheda (Evaluation Board) STM32F4 Discovery della ST. Nelle istruzioni che seguono, verrà utilizzato il programmatore integrato sulla scheda (ST-Link v2).
+Il firmware che governa le periferiche aggiunte a posteriori al robot è stato realizzato per la scheda (Evaluation Board) STM32F4 Discovery della ST, utilizzando il sistema operativo ChibiOS/RT. Questa appendice contiene informazioni utili su come utilizzare e modificare tali componenti.
+
+\section{Ambiente di sviluppo}
+Nelle istruzioni che seguono, verrà utilizzato il programmatore integrato sulla scheda (ST-Link v2).
 
 \subsection*{Prerequisiti}
 \begin{enumerate}
@@ -137,7 +143,7 @@ dove \verb|ch.elf| è il percorso del firmware compilato che si vuole caricare s
 \begin{nota} A volte la scheda non viene riconosciuta da OpenOCD. Questo problema a volte viene risolto tenendo premuto il pulsante RESET sulla scheda mentre si avvia openOCD. Se anche così non funziona, è necessario cancellare il contenuto della memoria flash con l'utility ST Visual Programmer (disponibile solo per Windows).
 \end{nota}
 
-\section{Collegamenti hardware}
+\section{Pin di collegamento della board utilizzati}
 Attualmente, i pin presenti sulla Discovery Board montata sul robot sono assegnati in questo modo:
 \begin{itemize}
 \item Collegamento con i sonar (timer): \verb|PA8| (nord), \verb|PB4| (sud), \verb|PA0| (ovest), \verb|PC6| (est)
@@ -157,15 +163,17 @@ Attualmente, i pin presenti sulla Discovery Board montata sul robot sono assegna
 \item Lettore RFID (collegamento seriale a 9600 bps): \verb|PB11| (RX)
 \end{itemize}
 \begin{nota}
-Il file \verb|board.h| permette di configurare le funzioni assegnate ai vari pin (input, output, alternate mode), secondo le informazioni presenti sul datasheet. Per modificare l'assegnamento dei pin, potrebb eessere necessario modificare - oltre a \verb|board.h| - il sorgente dei moduli del firmware che ne fanno uso.
+Il file \verb|board.h| permette di configurare le funzioni assegnate ai vari pin (input, output, alternate mode), secondo le informazioni presenti sul datasheet. Per modificare l'assegnamento dei pin, potrebbe eessere necessario modificare - oltre a \verb|board.h| - il sorgente dei moduli del firmware che ne fanno uso.
 \end{nota}
 
-\paragraph{Alimentazione} Tutti i dispositivi (discovery board, XBee, lettore RFID, sonar, ricevitore Atmel, driver per i led a infrarossi) vanno alimentati a $+5$V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
+\section{Alimentazione} Tutti i dispositivi (discovery board, XBee, lettore RFID, sonar, ricevitore Atmel, driver per i led a infrarossi) vanno alimentati a $+5$V DC tramite il regolatore di tensione collegato alla batteria principale di Spykee. La scheda contenente le resistenze necessarie al funzionamento dei led necessita soltanto del collegamento a massa.
 
-\paragraph{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l'unità di elaborazione e il robot, pertanto per il debugging di problemi di configurazione è sufficiente utilizzare un terminale seriale, come \verb|screen| o \verb|minicom| su Linux. Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi. Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di $115200$ bps, e impostare come Destination Address (High e Low) il Serial Number dell'altro Xbee.
+\section{Configurazione Zigbee} I dispositivi Xbee vengono utilizzati come un collegamento seriale punto-punto tra l'unità di elaborazione e il robot, pertanto per il debugging di problemi di configurazione è sufficiente utilizzare un terminale seriale, come \verb|screen| o \verb|minicom| su Linux. 
 
-\section{Comandi per il firmware del robot}
-Il firmware installato sulla discovery board presente nel robot accetta alcuni comandi che vengono inviati dal nodo \verb|Echoes| attraverso il collegamento seriale, e permettono di controllare i led:
+Per configurare i dispositivi Xbee è necessario utilizzare il programma X-CTU scaricabile dal sito Digi (solo per sistemi operativi Windows). Una volta aperta la scheda di configurazione, è sufficiente impostare su entrambi i dispositivi il bitrate di $115200$ bps, e impostare come Destination Address (High e Low) il Serial Number dell'altro Xbee.
+
+\section{Interfaccia microcontrollore - PC}
+Il firmware installato sulla board accetta alcuni comandi che vengono inviati dal nodo \verb|Echoes| attraverso il collegamento seriale, e permettono di controllare i led:
 \begin{itemize}
 \item \verb|reset|: spegne tutti i led
 \item \verb|led|: comanda i led colorati. Il comando è seguito da \verb|R|, \verb|Y| oppure \verb|G| a seconda che si vogliano comandare rispettivamente i led rossi, i led gialli oppure il led verde che c'è sulla testa di Spykee. Il secondo argomento del comando può essere \verb|B| per attivare la modalità lampeggiante del gruppo di led selezionato, oppure una stringa di cifre binarie che indicano se ognuno dei led del gruppo deve essere spento (\verb|0|) oppure acceso (\verb|1|). Ad esempio, il comando
